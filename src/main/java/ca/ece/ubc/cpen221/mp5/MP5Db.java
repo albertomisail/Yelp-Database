@@ -37,5 +37,4 @@ public interface MP5Db<T> {
 	 *         is a String that represents the id of an object of type T.
 	 */
 	ToDoubleBiFunction<MP5Db<T>, String> getPredictorFunction(String user);
-
 }
