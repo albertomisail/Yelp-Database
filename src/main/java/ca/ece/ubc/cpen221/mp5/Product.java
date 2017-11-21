@@ -8,7 +8,7 @@ public class Product {
 	protected double stars;
 	protected int numberOfReviews;
 	protected String photoUrl;
-	protected double price;
+	protected int price;
 	
 	public String getUrl() {
 		return url;
@@ -55,7 +55,7 @@ public class Product {
 	public double getPrice() {
 		return price;
 	}
-	public void setPrice(double price) {
+	public void setPrice(int price) {
 		this.price = price;
 	}
 }
