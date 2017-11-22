@@ -2,6 +2,7 @@ package ca.ece.ubc.cpen221.mp5;
 
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
+import javax.json.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -56,11 +57,39 @@ public class YelpDB implements MP5Db{
 		bufferedReader.close();
 	}
 
-	public Map<YelpRestaurant, Integer> kMeansClusters(int k){
+	public String kMeansClusters_json(int k){
+		Map<YelpRestaurant, Integer> clusters = kMeansClusters(k);
+		JsonObjectBuilder builder = Json.createObjectBuilder();
+		for(int i = 1; i <= k; i++){
+			Set<YelpRestaurant> restaurants = oneCluster(clusters, i);
+			JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+			restaurants.parallelStream().forEach(t->
+					{
+						arrayBuilder.add(t.toString());
+					}
+			);
+			builder.add("Cluster "+i,arrayBuilder);
+		}
+		return builder.build().toString();
+	}
+
+	private Set<YelpRestaurant> oneCluster(Map<YelpRestaurant, Integer> map, int i){
+		Set<YelpRestaurant> result = new HashSet<YelpRestaurant>();
+		map.entrySet().parallelStream().forEach(t->
+				{
+					if(t.getValue().equals(i)){
+						result.add(t.getKey());
+					}
+				}
+		);
+		return result;
+	}
+
+	private Map<YelpRestaurant, Integer> kMeansClusters(int k){
 		Map<YelpRestaurant, Integer> result = new HashMap<YelpRestaurant, Integer>();
 		Map<YelpRestaurant, Integer> cache = new HashMap<YelpRestaurant, Integer>();
 		List<Point> centers = new ArrayList<Point>();
-		for(int i = 0; i < k; i++){
+		for(int i = 1; i <= k; i++){
 			centers.add(new Point());
 		}
 		do{

@@ -25,7 +25,7 @@ public interface MP5Db<T> {
 	 *            number of clusters to create (0 < k <= number of objects)
 	 * @return a String, in JSON format, that represents the clusters
 	 */
-	//String kMeansClusters_json(int k);
+	String kMeansClusters_json(int k);
 
 	/**
 	 * 

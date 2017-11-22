@@ -43,6 +43,9 @@ public abstract class Record {
 			return false;
 		return true;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return this.id;
+	}
 }
