@@ -3,8 +3,8 @@ package ca.ece.ubc.cpen221.mp5;
 import java.util.List;
 
 public class Point {
-	private final double latitude;
-	private final double longitude;
+	private double longitude;
+	private double latitude;
 	
 	private double calculateDistance(Point other) {
 		return Math.sqrt(Math.pow(this.getLatitude()-other.getLatitude(), 2)
@@ -33,18 +33,6 @@ public class Point {
 
 	public double getLongitude() {
 		return longitude;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(latitude);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(longitude);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		return result;
 	}
 
 	@Override

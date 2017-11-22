@@ -1,16 +1,10 @@
 package ca.ece.ubc.cpen221.mp5;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,7 +14,7 @@ public class YelpDB implements MP5Db{
 	public YelpDB(String restaurantFile, String reviewFile, String userFile) throws IOException {
 		records = new HashSet<Record>();
 		parseUserFile(userFile);
-		//parseRestaurantFile(restaurantFile);
+		parseRestaurantFile(restaurantFile);
 		parseReviewFile(reviewFile);
 		System.out.println(records.size());
 	}
@@ -35,17 +29,17 @@ public class YelpDB implements MP5Db{
 		}
 		bufferedReader.close();
 	}
-	/*
+
 	private void parseRestaurantFile(String filename) throws IOException {
 		String line;
 		FileReader fileReader = new FileReader(filename);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		while ((line = bufferedReader.readLine()) != null) {
-			Record restaurant = new Restaurant(line);
+			Record restaurant = new YelpRestaurant(line);
 			records.add(restaurant);
 		}
 		bufferedReader.close();
-	}*/
+	}
 
 	private void parseReviewFile(String filename) throws IOException {
 		String line;
@@ -62,8 +56,8 @@ public class YelpDB implements MP5Db{
 		bufferedReader.close();
 	}
 	/*
-	private Map<Restaurant, Integer> kMeansClusters(int k) throws InterruptedException{
-		Map<Restaurant, Integer> result = new HashMap<Restaurant, Integer>();
+	private Map<YelpRestaurant, Integer> kMeansClusters(int k) throws InterruptedException{
+		Map<YelpRestaurant, Integer> result = new HashMap<YelpRestaurant, Integer>();
 		List<Point> centersBef = new ArrayList<Point>();
 		List<Point> centers = new ArrayList<Point>();
 		//Create k threads that generate random points
@@ -83,15 +77,15 @@ public class YelpDB implements MP5Db{
 			pointGenerator.start();
 		}
 		finishAllThreads(threads);
-		Set<Restaurant> restaurants = records.parallelStream().filter(t->t.getType()=="business")
-				.map(t->(Restaurant)t).collect(Collectors.toSet());
+		Set<YelpRestaurant> restaurants = records.parallelStream().filter(t->t.getType()=="business")
+				.map(t->(YelpRestaurant)t).collect(Collectors.toSet());
 		restaurants.parallelStream().map(restaurant -> restaurant.getPoint())
 				.map(point->point.getClosestPoint(centers))
 		do {
 			for (Record one : restaurants) {
 				Thread calculateCluster = new Thread(new Runnable() {
 					public void run() {
-						Restaurant restaurant = (Restaurant)one;
+						YelpRestaurant restaurant = (YelpRestaurant)one;
 						Point closestCenter = restaurant.getPoint().getClosestPoint(centers);
 						Integer clusterNumber = centers.indexOf(closestCenter);
 						result.put(restaurant, clusterNumber);
@@ -106,11 +100,11 @@ public class YelpDB implements MP5Db{
 		return result;
 	}
 	
-	private List<Point> calculateNewCenters(Map<Restaurant, Integer> map, int k){
+	private List<Point> calculateNewCenters(Map<YelpRestaurant, Integer> map, int k){
 		List<Point> result = new ArrayList<Point>();
 		double[][] coordinates = new double[2][k];
-		for(Map.Entry<Restaurant, Integer> entry : map.entrySet()) {
-			Restaurant restaurant = entry.getKey();
+		for(Map.Entry<YelpRestaurant, Integer> entry : map.entrySet()) {
+			YelpRestaurant restaurant = entry.getKey();
 			Point point = restaurant.getPoint();
 			coordinates[0][entry.getValue()] += point.getLongitude();
 			coordinates[1][entry.getValue()] += point.getLatitude();
@@ -138,12 +132,12 @@ public class YelpDB implements MP5Db{
 		list = new ArrayList<Thread>();
 	}
 	
-	/*private Map<String, Restaurant> restaurants;
+	/*private Map<String, YelpRestaurant> restaurants;
 	private Map<String, YelpUser> users;
 	private Map<String, YelpReview> reviews;
 
 	public YelpDB(String restaurantFile, String reviewFile, String userFile) throws IOException {
-		this.restaurants = new HashMap<String, Restaurant>();
+		this.restaurants = new HashMap<String, YelpRestaurant>();
 		this.users = new HashMap<String, YelpUser>();
 		this.reviews = new HashMap<String, YelpReview>();
 		parseUserFile(userFile);
@@ -168,7 +162,7 @@ public class YelpDB implements MP5Db{
 		FileReader fileReader = new FileReader(filename);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		while ((line = bufferedReader.readLine()) != null) {
-			Restaurant restaurant = new Restaurant(line);
+			YelpRestaurant restaurant = new YelpRestaurant(line);
 			String id = restaurant.getId();
 			restaurants.put(id, restaurant);
 		}
@@ -209,13 +203,13 @@ public class YelpDB implements MP5Db{
 			pointGenerator.start();
 		}
 		finishAllThreads(threads);
-		for(Map.Entry<String, Restaurant> entry : restaurants.entrySet()) {
+		for(Map.Entry<String, YelpRestaurant> entry : restaurants.entrySet()) {
 			cache.put(entry.getKey(), -1);
 		}
 		do {
-			for (Map.Entry<String, Restaurant> entry : restaurants.entrySet()) {
+			for (Map.Entry<String, YelpRestaurant> entry : restaurants.entrySet()) {
 				String id = entry.getKey();
-				Restaurant restaurant = entry.getValue();
+				YelpRestaurant restaurant = entry.getValue();
 				Thread calculateCluster = new Thread(new Runnable() {
 					public void run() {
 						Point closestCenter = restaurant.getPoint().getClosestPoint(centers);
@@ -236,7 +230,7 @@ public class YelpDB implements MP5Db{
 		List<Point> result = new ArrayList<Point>();
 		double[][] coordinates = new double[2][k];
 		for(Map.Entry<String, Integer> entry : map.entrySet()) {
-			Restaurant restaurant = restaurants.get(entry.getKey());
+			YelpRestaurant restaurant = restaurants.get(entry.getKey());
 			Point point = restaurant.getPoint();
 			coordinates[0][entry.getValue()] += point.getLongitude();
 			coordinates[1][entry.getValue()] += point.getLatitude();
@@ -268,7 +262,7 @@ public class YelpDB implements MP5Db{
 		list = new ArrayList<Thread>();
 	}
 	
-	public Restaurant getRestaurant(String id) {
+	public YelpRestaurant getRestaurant(String id) {
 		return restaurants.get(id);
 	}
 	
@@ -290,7 +284,7 @@ public class YelpDB implements MP5Db{
 		double sxy = 0;
 		for(String review_id : user.getReviews()) {
 			Review review = this.getReview(review_id);
-			Restaurant restaurant = this.getRestaurant(review.getProduct_id());
+			YelpRestaurant restaurant = this.getRestaurant(review.getProduct_id());
 			sxy += (review.getStars()-meanx)*(restaurant.getPrice()-meany);
 		}
 	}*/
