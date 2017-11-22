@@ -57,4 +57,8 @@ public class YelpRestaurant extends Product{
 		double b = json.getJsonNumber("latitude").doubleValue();
 		this.coordinates = new Point(a,b);
 	}
+
+	public Point getPoint(){
+		return this.coordinates;
+	}
 }

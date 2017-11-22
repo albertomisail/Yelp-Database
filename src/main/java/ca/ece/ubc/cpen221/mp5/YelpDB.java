@@ -1,11 +1,11 @@
 package ca.ece.ubc.cpen221.mp5;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class YelpDB implements MP5Db{
@@ -55,50 +55,41 @@ public class YelpDB implements MP5Db{
 		}
 		bufferedReader.close();
 	}
-	/*
-	private Map<YelpRestaurant, Integer> kMeansClusters(int k) throws InterruptedException{
+
+	public Map<YelpRestaurant, Integer> kMeansClusters(int k){
 		Map<YelpRestaurant, Integer> result = new HashMap<YelpRestaurant, Integer>();
-		List<Point> centersBef = new ArrayList<Point>();
+		Map<YelpRestaurant, Integer> cache = new HashMap<YelpRestaurant, Integer>();
 		List<Point> centers = new ArrayList<Point>();
-		//Create k threads that generate random points
-		//TODO check this
-		//Also check for when k is bigger than the number of restaurants!!
-		List<Thread> threads = new ArrayList<Thread>();
-		for(int i = 0; i < k; i++) {
-			Thread pointGenerator = new Thread(
-					new Runnable() {
-						public void run() {
-							Point center = new Point(Math.random()-122,Math.random()+37);
-							centers.add(center);
-							centersBef.add(null);
-						}
-					});
-			threads.add(pointGenerator);
-			pointGenerator.start();
+		for(int i = 0; i < k; i++){
+			centers.add(new Point());
 		}
-		finishAllThreads(threads);
-		Set<YelpRestaurant> restaurants = records.parallelStream().filter(t->t.getType()=="business")
-				.map(t->(YelpRestaurant)t).collect(Collectors.toSet());
-		restaurants.parallelStream().map(restaurant -> restaurant.getPoint())
-				.map(point->point.getClosestPoint(centers))
-		do {
-			for (Record one : restaurants) {
-				Thread calculateCluster = new Thread(new Runnable() {
-					public void run() {
-						YelpRestaurant restaurant = (YelpRestaurant)one;
-						Point closestCenter = restaurant.getPoint().getClosestPoint(centers);
-						Integer clusterNumber = centers.indexOf(closestCenter);
-						result.put(restaurant, clusterNumber);
+		do{
+			records.parallelStream().filter(t->t.getType().equals("business"))
+					.map(t->(YelpRestaurant)t).forEach(t->
+					{
+						int i = t.getPoint().getClosestPoint(centers);
+						result.put(t, i);
 					}
-				});
-				threads.add(calculateCluster);
-				calculateCluster.start();
-			}
-			finishAllThreads(threads);
-			centers = calculateNewCenters(result, k);
-		}while(differentCluster(centers, centersBef));
+			);
+		}while(false);
 		return result;
 	}
+
+	private boolean differentCluster(Map<YelpRestaurant, Integer> map, Map<String, Integer>cache) {
+		Set<Boolean> isFalse = new HashSet<Boolean>();
+		map.entrySet().parallelStream().forEach(t->
+			{
+				if(!cache.containsKey(t.getKey())){
+					isFalse.add(false);
+				}
+				else{
+					if(!cache.get(t.getKey()).equals(t.getValue())) isFalse.add(false);
+				}
+			}
+		);
+		return !isFalse.isEmpty();
+	}
+	/*
 	
 	private List<Point> calculateNewCenters(Map<YelpRestaurant, Integer> map, int k){
 		List<Point> result = new ArrayList<Point>();

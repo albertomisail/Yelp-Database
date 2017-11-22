@@ -11,13 +11,16 @@ public class Point {
 				+Math.pow(this.getLongitude()-other.getLongitude(), 2));
 	}
 	
-	public Point getClosestPoint(List<Point> centers) {
-		Point result = null;
+	public int getClosestPoint(List<Point> centers) {
+		int result = 0;
+		Point closest = null;
 		double distance = Integer.MAX_VALUE;
-		for(Point point : centers) {
+		for(int i = 0; i < centers.size(); i++) {
+			Point point = centers.get(i);
 			if(calculateDistance(point)<=distance) {
 				distance = calculateDistance(point);
-				result = point;
+				closest = point;
+				result = i;
 			}
 		}
 		return result;
@@ -27,6 +30,12 @@ public class Point {
 		this.longitude=a;
 		this.latitude=b;
 	}
+
+	public Point(){
+		this.longitude = -122 + Math.random();
+		this.latitude = 37 + Math.random();
+	}
+
 	public double getLatitude() {
 		return latitude;
 	}
