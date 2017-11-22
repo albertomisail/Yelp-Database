@@ -4,7 +4,6 @@ public class Restaurant extends Product{
 	private boolean open;
 	private String[] neighborhoods;
 	private String state;
-	private String type;
 	private String city;
 	private String address;
 	private String[] schools;
@@ -14,7 +13,7 @@ public class Restaurant extends Product{
 		parse(line);
 	}
 	private void parse(String line) {
-		JSONObject json = parseJSONObject(line);
+		/*JSONObject json = parseJSONObject(line);
 		this.url = json.getString("url");
 		this.open = json.getBoolean("open");
 		double longitude = json.getDouble("longitude");
@@ -25,7 +24,7 @@ public class Restaurant extends Product{
 		this.numberOfReviews = json.getInt("review_count");
 		this.price = json.getInt("price");
 		double latitude = json.getDouble("latitude");
-		this.coordinates = new Point(longitude, latitude);
+		this.coordinates = new Point(longitude, latitude);*/
 	}
 	public boolean isOpen() {
 		return open;

@@ -1,7 +1,5 @@
 package ca.ece.ubc.cpen221.mp5;
 
-import javax.json.*;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,9 +12,133 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-public class YelpDB implements MP5Db {
-	private Map<String, Restaurant> restaurants;
+public class YelpDB implements MP5Db{
+	private Set<Record> records;
+	
+	public YelpDB(String restaurantFile, String reviewFile, String userFile) throws IOException {
+		records = new HashSet<Record>();
+		parseUserFile(userFile);
+		//parseRestaurantFile(restaurantFile);
+		parseReviewFile(reviewFile);
+		System.out.println(records.size());
+	}
+	
+	private void parseUserFile(String filename) throws IOException {
+		String line;
+		FileReader fileReader = new FileReader(filename);
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+		while ((line = bufferedReader.readLine()) != null) {
+			Record user = new YelpUser(line);
+			records.add(user);
+		}
+		bufferedReader.close();
+	}
+	/*
+	private void parseRestaurantFile(String filename) throws IOException {
+		String line;
+		FileReader fileReader = new FileReader(filename);
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+		while ((line = bufferedReader.readLine()) != null) {
+			Record restaurant = new Restaurant(line);
+			records.add(restaurant);
+		}
+		bufferedReader.close();
+	}*/
+
+	private void parseReviewFile(String filename) throws IOException {
+		String line;
+		FileReader fileReader = new FileReader(filename);
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+		while ((line = bufferedReader.readLine()) != null) {
+			Record review = new YelpReview(line);
+			records.add(review);
+			List<Record> users = records.parallelStream().filter(t->t.getType().equals("user"))
+					.filter(t->t.getId().equals(((Review)review).getUser_id())).collect(Collectors.toList());
+			User user = (User)users.get(0);
+			user.addReview(review.getId());
+		}
+		bufferedReader.close();
+	}
+	/*
+	private Map<Restaurant, Integer> kMeansClusters(int k) throws InterruptedException{
+		Map<Restaurant, Integer> result = new HashMap<Restaurant, Integer>();
+		List<Point> centersBef = new ArrayList<Point>();
+		List<Point> centers = new ArrayList<Point>();
+		//Create k threads that generate random points
+		//TODO check this
+		//Also check for when k is bigger than the number of restaurants!!
+		List<Thread> threads = new ArrayList<Thread>();
+		for(int i = 0; i < k; i++) {
+			Thread pointGenerator = new Thread(
+					new Runnable() {
+						public void run() {
+							Point center = new Point(Math.random()-122,Math.random()+37);
+							centers.add(center);
+							centersBef.add(null);
+						}
+					});
+			threads.add(pointGenerator);
+			pointGenerator.start();
+		}
+		finishAllThreads(threads);
+		Set<Restaurant> restaurants = records.parallelStream().filter(t->t.getType()=="business")
+				.map(t->(Restaurant)t).collect(Collectors.toSet());
+		restaurants.parallelStream().map(restaurant -> restaurant.getPoint())
+				.map(point->point.getClosestPoint(centers))
+		do {
+			for (Record one : restaurants) {
+				Thread calculateCluster = new Thread(new Runnable() {
+					public void run() {
+						Restaurant restaurant = (Restaurant)one;
+						Point closestCenter = restaurant.getPoint().getClosestPoint(centers);
+						Integer clusterNumber = centers.indexOf(closestCenter);
+						result.put(restaurant, clusterNumber);
+					}
+				});
+				threads.add(calculateCluster);
+				calculateCluster.start();
+			}
+			finishAllThreads(threads);
+			centers = calculateNewCenters(result, k);
+		}while(differentCluster(centers, centersBef));
+		return result;
+	}
+	
+	private List<Point> calculateNewCenters(Map<Restaurant, Integer> map, int k){
+		List<Point> result = new ArrayList<Point>();
+		double[][] coordinates = new double[2][k];
+		for(Map.Entry<Restaurant, Integer> entry : map.entrySet()) {
+			Restaurant restaurant = entry.getKey();
+			Point point = restaurant.getPoint();
+			coordinates[0][entry.getValue()] += point.getLongitude();
+			coordinates[1][entry.getValue()] += point.getLatitude();
+		}
+		for(int i = 0; i < k; i++) {
+			Point point = new Point(coordinates[0][i]/k,coordinates[1][i]/k);
+			result.add(point);
+		}
+		return result;
+	}
+	
+	private boolean differentCluster(List<Point>centerNow, List<Point>centerBefore) {
+		for(int i = 0; i < centerNow.size(); i++) {
+			if(!centerNow.get(i).equals(centerBefore.get(i))){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private void finishAllThreads(List<Thread> list) throws InterruptedException {
+		for(Thread t : list) {
+			t.join();
+		}
+		list = new ArrayList<Thread>();
+	}
+	
+	/*private Map<String, Restaurant> restaurants;
 	private Map<String, YelpUser> users;
 	private Map<String, YelpReview> reviews;
 
@@ -171,7 +293,7 @@ public class YelpDB implements MP5Db {
 			Restaurant restaurant = this.getRestaurant(review.getProduct_id());
 			sxy += (review.getStars()-meanx)*(restaurant.getPrice()-meany);
 		}
-	}
+	}*/
 	
 	
 }

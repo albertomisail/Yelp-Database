@@ -10,49 +10,13 @@ package ca.ece.ubc.cpen221.mp5;
 public abstract class Record {
 	protected String id;
 	protected String type;
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public String getId() {
-		return id;
-	}
-	
-	/**
-	 * 
-	 * @param id
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
+
 	public String getType() {
 		return type;
 	}
-	
-	/**
-	 * 
-	 * @param type
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		return result;
+
+	public String getId() {
+		return id;
 	}
 
 	/**

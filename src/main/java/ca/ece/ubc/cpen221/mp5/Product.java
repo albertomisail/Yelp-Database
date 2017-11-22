@@ -1,6 +1,6 @@
 package ca.ece.ubc.cpen221.mp5;
 
-public class Product {
+public class Product extends Record{
 	protected String url;
 	protected String id;
 	protected String name;

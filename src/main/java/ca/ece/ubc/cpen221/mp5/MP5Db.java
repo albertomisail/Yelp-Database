@@ -16,7 +16,7 @@ public interface MP5Db<T> {
 	 * @param queryString
 	 * @return the set of objects that matches the query
 	 */
-	Set<T> getMatches(String queryString);
+	//Set<T> getMatches(String queryString);
 
 	/**
 	 * Cluster objects into k clusters using k-means clustering
@@ -25,7 +25,7 @@ public interface MP5Db<T> {
 	 *            number of clusters to create (0 < k <= number of objects)
 	 * @return a String, in JSON format, that represents the clusters
 	 */
-	String kMeansClusters_json(int k);
+	//String kMeansClusters_json(int k);
 
 	/**
 	 * 
@@ -36,5 +36,5 @@ public interface MP5Db<T> {
 	 *         returned takes two arguments: one is the database and other other
 	 *         is a String that represents the id of an object of type T.
 	 */
-	ToDoubleBiFunction<MP5Db<T>, String> getPredictorFunction(String user);
+	//ToDoubleBiFunction<MP5Db<T>, String> getPredictorFunction(String user);
 }
