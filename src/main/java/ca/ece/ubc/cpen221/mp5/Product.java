@@ -8,4 +8,8 @@ public class Product extends Record{
 	protected int numberOfReviews;
 	protected String photoUrl;
 	protected int price;
+
+	public int getPrice() {
+		return price;
+	}
 }

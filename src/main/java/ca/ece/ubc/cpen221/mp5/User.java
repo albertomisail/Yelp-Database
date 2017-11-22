@@ -13,4 +13,8 @@ public class User extends Record{
 	public void addReview(String review_Id){
 		this.reviews.add(review_Id);
 	}
+
+	public Set<String> getReviews() {
+		return reviews;
+	}
 }
