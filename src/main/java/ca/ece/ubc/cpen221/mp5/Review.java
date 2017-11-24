@@ -12,4 +12,12 @@ public class Review extends Record{
 	public String getUser_id() {
 		return user_id;
 	}
+
+	public String getProduct_id() {
+		return product_id;
+	}
+
+	public int getStars() {
+		return stars;
+	}
 }

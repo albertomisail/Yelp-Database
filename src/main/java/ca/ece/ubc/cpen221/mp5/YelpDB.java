@@ -8,11 +8,11 @@ import java.util.*;
 import java.util.function.ToDoubleBiFunction;
 import java.util.stream.Collectors;
 
-public class YelpDB<R> implements MP5Db{
-	private Set<Record> records;
+public class YelpDB implements MP5Db{
+	private Map<String, Record> records;
 	
 	public YelpDB(String restaurantFile, String reviewFile, String userFile) throws IOException {
-		records = new HashSet<Record>();
+		records = new HashMap<String, Record>();
 		parseUserFile(userFile);
 		parseRestaurantFile(restaurantFile);
 		parseReviewFile(reviewFile);
@@ -25,7 +25,7 @@ public class YelpDB<R> implements MP5Db{
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		while ((line = bufferedReader.readLine()) != null) {
 			Record user = new YelpUser(line);
-			records.add(user);
+			records.put(user.getId()+user.getType(),user);
 		}
 		bufferedReader.close();
 	}
@@ -36,7 +36,7 @@ public class YelpDB<R> implements MP5Db{
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		while ((line = bufferedReader.readLine()) != null) {
 			Record restaurant = new YelpRestaurant(line);
-			records.add(restaurant);
+			records.put(restaurant.getId()+restaurant.getType(),restaurant);
 		}
 		bufferedReader.close();
 	}
@@ -47,10 +47,8 @@ public class YelpDB<R> implements MP5Db{
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		while ((line = bufferedReader.readLine()) != null) {
 			Record review = new YelpReview(line);
-			records.add(review);
-			List<Record> users = records.parallelStream().filter(t->t.getType().equals("user"))
-					.filter(t->t.getId().equals(((Review)review).getUser_id())).collect(Collectors.toList());
-			User user = (User)users.get(0);
+			records.put(review.getId()+review.getType(),review);
+			User user = (User)records.get(((Review)review).getUser_id()+"user");
 			user.addReview(review.getId());
 		}
 		bufferedReader.close();
@@ -92,7 +90,8 @@ public class YelpDB<R> implements MP5Db{
 			centers.add(new Point());
 		}
 		do{
-			records.parallelStream().filter(t->t.getType().equals("business"))
+			records.entrySet().parallelStream().map(t->t.getValue())
+					.filter(t->t.getType().equals("business"))
 					.map(t->(YelpRestaurant)t).forEach(t->
 					{
 						int i = t.getPoint().getClosestPoint(centers);
@@ -118,11 +117,19 @@ public class YelpDB<R> implements MP5Db{
 		return !isFalse.isEmpty();
 	}
 
-	public ToDoubleBiFunction<YelpDB<Record>, String> getPredictorFunction(String user){
-		return new Predict();
+	public ToDoubleBiFunction<YelpDB, String> getPredictorFunction(String user){
+		return new Predict(this, user);
 	}
 
-	public Set<Record> getRecords() {
-		return records;
+	public User getUser(String userId){
+		return (User)records.get(userId+"user");
+	}
+
+	public Review getReview(String reviewId){
+		return (Review)records.get(reviewId+"review");
+	}
+
+	public Product getProduct(String productId){
+		return (Product)records.get(productId+"business");
 	}
 }

@@ -17,4 +17,8 @@ public class User extends Record{
 	public Set<String> getReviews() {
 		return reviews;
 	}
+
+	public double getAverageStars() {
+		return averageStars;
+	}
 }

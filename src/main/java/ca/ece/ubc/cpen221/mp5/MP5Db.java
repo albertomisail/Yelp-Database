@@ -36,5 +36,11 @@ public interface MP5Db<T> {
 	 *         returned takes two arguments: one is the database and other other
 	 *         is a String that represents the id of an object of type T.
 	 */
-	ToDoubleBiFunction<MP5Db<T>, String> getPredictorFunction(String user);
+	//ToDoubleBiFunction<MP5Db<T>, String> getPredictorFunction(String user);
+
+	User getUser (String userId);
+
+	Review getReview(String reviewId);
+
+	Product getProduct(String productId);
 }

@@ -43,24 +43,22 @@ public class YelpDBServer {
         PrintWriter out = new PrintWriter(new OutputStreamWriter(
                 socket.getOutputStream()),true);
 
-        try{
+
             for(String line = in.readLine(); line != null;
-                    line = in.readLine()){
-                System.err.println("Request "+line);
-                try{
+                    line = in.readLine()) {
+                System.err.println("Request " + line);
+                //analysis of queries happens here
 
-                }catch (Exception e){
-
-                }
                 out.flush();
             }
-        }finally {
+
             out.close();
             in.close();
-        }
+
     }
 
     public static void main(String[] args ){
+        System.out.println("Start serving now");
         try {
             YelpDBServer server = new YelpDBServer(
                     PORT);
