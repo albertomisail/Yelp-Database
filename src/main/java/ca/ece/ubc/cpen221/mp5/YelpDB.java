@@ -16,7 +16,6 @@ public class YelpDB implements MP5Db{
 		parseUserFile(userFile);
 		parseRestaurantFile(restaurantFile);
 		parseReviewFile(reviewFile);
-		System.out.println(records.size());
 	}
 	
 	private void parseUserFile(String filename) throws IOException {
@@ -24,8 +23,8 @@ public class YelpDB implements MP5Db{
 		FileReader fileReader = new FileReader(filename);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		while ((line = bufferedReader.readLine()) != null) {
-			Record user = new YelpUser(line);
-			records.put(user.getId()+user.getType(),user);
+			User user = new YelpUser(line);
+			addUser(user);
 		}
 		bufferedReader.close();
 	}
@@ -35,8 +34,8 @@ public class YelpDB implements MP5Db{
 		FileReader fileReader = new FileReader(filename);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		while ((line = bufferedReader.readLine()) != null) {
-			Record restaurant = new YelpRestaurant(line);
-			records.put(restaurant.getId()+restaurant.getType(),restaurant);
+			Product restaurant = new YelpRestaurant(line);
+			addProduct(restaurant);
 		}
 		bufferedReader.close();
 	}
@@ -46,8 +45,8 @@ public class YelpDB implements MP5Db{
 		FileReader fileReader = new FileReader(filename);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		while ((line = bufferedReader.readLine()) != null) {
-			Record review = new YelpReview(line);
-			records.put(review.getId()+review.getType(),review);
+			Review review = new YelpReview(line);
+			addReview(review);
 			User user = (User)records.get(((Review)review).getUser_id()+"user");
 			user.addReview(review.getId());
 		}
@@ -117,7 +116,7 @@ public class YelpDB implements MP5Db{
 		return !isFalse.isEmpty();
 	}
 
-	public ToDoubleBiFunction<YelpDB, String> getPredictorFunction(String user){
+	public ToDoubleBiFunction<MP5Db, String> getPredictorFunction(String user){
 		return new Predict(this, user);
 	}
 
@@ -131,5 +130,32 @@ public class YelpDB implements MP5Db{
 
 	public Product getProduct(String productId){
 		return (Product)records.get(productId+"business");
+	}
+
+	public void addUser(User user){
+		records.put(user.getId()+user.getType(),user);
+	}
+
+	public void addProduct(Product restaurant) {
+		records.put(restaurant.getId()+restaurant.getType(),restaurant);
+	}
+
+	public void addReview(Review review) {
+		records.put(review.getId()+review.getType(),review);
+	}
+
+
+	public boolean containsUser(String id) {
+		return records.containsKey(id+"user");
+	}
+
+
+	public boolean containsProduct(String id) {
+		return records.containsKey(id+"business");
+	}
+
+
+	public boolean containsReview(String id) {
+		return records.containsKey(id+"review");
 	}
 }

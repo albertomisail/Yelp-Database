@@ -1,21 +1,20 @@
 package ca.ece.ubc.cpen221.mp5;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import javax.json.*;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Set;
 
 public class YelpRestaurant extends Product{
 	private boolean open;
-	private String[] neighborhoods;
+	private Set<String> neighborhoods;
 	private String state;
 	private String city;
 	private String address;
-	private String[] schools;
+	private Set<String> schools;
 	private Point coordinates;
 	
 	public YelpRestaurant(String line) throws UnsupportedEncodingException {
@@ -31,9 +30,9 @@ public class YelpRestaurant extends Product{
 		this.url = json.getString("url");
 		this.name = json.getString("name");
 		JsonArray cat = json.getJsonArray("categories");
-		this.categories = new String[cat.size()];
+		this.categories = new HashSet<>();
 		for(int i = 0; i < cat.size(); i++){
-			this.categories[i] = cat.getString(i);
+			categories.add(cat.getString(i));
 		}
 		this.stars = json.getJsonNumber("stars").doubleValue();
 		this.numberOfReviews = json.getInt("review_count");
@@ -41,17 +40,17 @@ public class YelpRestaurant extends Product{
 		this.price = json.getInt("price");
 		this.open = json.getBoolean("open");
 		JsonArray hoods = json.getJsonArray("neighborhoods");
-		this.neighborhoods = new String[hoods.size()];
+		this.neighborhoods = new HashSet<>();
 		for(int i = 0; i < hoods.size(); i++){
-			this.neighborhoods[i] = hoods.getString(i);
+			this.neighborhoods.add(hoods.getString(i));
 		}
 		this.state = json.getString("state");
 		this.city = json.getString("city");
 		this.address = json.getString("full_address");
 		JsonArray sch = json.getJsonArray("schools");
-		this.schools = new String[sch.size()];
+		this.schools = new HashSet<>();
 		for(int i = 0; i < sch.size(); i++){
-			this.neighborhoods[i] = sch.getString(i);
+			this.neighborhoods.add(sch.getString(i));
 		}
 		double a = json.getJsonNumber("longitude").doubleValue();
 		double b = json.getJsonNumber("latitude").doubleValue();
@@ -60,5 +59,70 @@ public class YelpRestaurant extends Product{
 
 	public Point getPoint(){
 		return this.coordinates;
+	}
+
+	@Override
+	public String toString(){
+		JsonArrayBuilder schoolsJson = Json.createArrayBuilder();
+		for(String s : schools){
+			schoolsJson.add(s);
+		}
+		JsonArrayBuilder neighborhoodsJson = Json.createArrayBuilder();
+		for(String s : neighborhoods){
+			neighborhoodsJson.add(s);
+		}
+		JsonObjectBuilder builder = Json.createObjectBuilder();
+		builder.add("open",open)
+				.add("state", state)
+				.add("city", city)
+				.add("full_address", address)
+				.add("latitude", coordinates.getLatitude())
+				.add("longitude", coordinates.getLongitude())
+				.add("schools", schoolsJson)
+				.add("neighborhoods", neighborhoodsJson);
+
+		return super.toString()+builder.build().toString();
+	}
+
+	public YelpRestaurant(String info, YelpDB database) throws UnsupportedEncodingException, NullPointerException, ClassCastException{
+		InputStream stream = new ByteArrayInputStream(info.getBytes(StandardCharsets.UTF_8.name()));
+		JsonReader reader = Json.createReader(stream);
+		JsonObject json = reader.readObject();
+		reader.close();
+		this.type = "business";
+		String restaurantId = Record.getSaltString();
+		while(database.containsProduct(restaurantId)){
+			restaurantId = Record.getSaltString();
+		}
+		this.id = restaurantId;
+		this.name = json.getString("name");
+		this.url = "http://www.yelp.com/biz/"+name;
+		JsonArray cat = json.getJsonArray("categories");
+		this.categories = new HashSet<>();
+		for(int i = 0; i < cat.size(); i++){
+			categories.add(cat.getString(i));
+		}
+		this.stars = 0.0;
+		//TODO chech this
+		this.numberOfReviews = 0;
+		this.photoUrl = json.getString("photo_url");
+		this.price = json.getInt("price");
+		this.open = json.getBoolean("open");
+		JsonArray hoods = json.getJsonArray("neighborhoods");
+		this.neighborhoods = new HashSet<>();
+		for(int i = 0; i < hoods.size(); i++){
+			this.neighborhoods.add(hoods.getString(i));
+		}
+		this.state = json.getString("state");
+		this.city = json.getString("city");
+		this.address = json.getString("full_address");
+		JsonArray sch = json.getJsonArray("schools");
+		this.schools = new HashSet<>();
+		for(int i = 0; i < sch.size(); i++){
+			this.neighborhoods.add(sch.getString(i));
+		}
+		double a = json.getJsonNumber("longitude").doubleValue();
+		double b = json.getJsonNumber("latitude").doubleValue();
+		this.coordinates = new Point(a,b);
 	}
 }

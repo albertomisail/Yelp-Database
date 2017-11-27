@@ -1,5 +1,9 @@
 package ca.ece.ubc.cpen221.mp5;
 
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
+import java.util.Random;
+
 /**
  * Most generic data type for an entry in the database
  * 
@@ -46,6 +50,24 @@ public abstract class Record {
 
 	@Override
 	public String toString() {
-		return this.id;
+		JsonObjectBuilder builder = Json.createObjectBuilder();
+		builder.add("id",this.getId())
+				.add("type", this.getType());
+
+		return builder.build().toString();
+	}
+
+	//https://stackoverflow.com/questions/20536566/creating-a-random-string-with-a-z-and-0-9-in-java
+	protected static String getSaltString() {
+		String SALTCHARS = "qwertyuiopasdfghjklzxcvbnmABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+		StringBuilder salt = new StringBuilder();
+		Random rnd = new Random();
+		while (salt.length() < 23) { // length of the random string.
+			int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+			salt.append(SALTCHARS.charAt(index));
+		}
+		String saltStr = salt.toString();
+		return saltStr;
+
 	}
 }

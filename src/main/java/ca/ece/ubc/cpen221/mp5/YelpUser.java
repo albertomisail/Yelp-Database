@@ -34,4 +34,35 @@ public class YelpUser extends User{
 		this.votes[1] = votes.getInt("useful");
 		this.votes[2] = votes.getInt("cool");
 	}
+
+	public YelpUser(String info, YelpDB database) throws UnsupportedEncodingException, NullPointerException, ClassCastException{
+		InputStream stream = new ByteArrayInputStream(info.getBytes(StandardCharsets.UTF_8.name()));
+		JsonReader reader = Json.createReader(stream);
+		JsonObject json = reader.readObject();
+		reader.close();
+		this.type = "user";
+		String userId = Record.getSaltString();
+		while(database.containsUser(userId)){
+			userId = Record.getSaltString();
+		}
+		this.id = userId;
+		this.name = json.getString("name");
+		this.url = "http://www.yelp.com/user_details?userid="+id;
+		this.reviewCount = 0;
+		this.averageStars = 0.0;
+		this.reviews = new HashSet<String>();
+		this.votes = new int[3];
+	}
+
+	public String toString(){
+		JsonArrayBuilder votesJson = Json.createArrayBuilder();
+		for(int i = 0; i < votes.length; i++){
+			votesJson.add(votes[i]);
+		}
+
+		JsonObjectBuilder builder = Json.createObjectBuilder();
+		builder.add("votes",votesJson);
+
+		return super.toString()+builder.build().toString();
+	}
 }
