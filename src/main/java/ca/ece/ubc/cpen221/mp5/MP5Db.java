@@ -16,7 +16,7 @@ public interface MP5Db<T> {
 	 * @param queryString
 	 * @return the set of objects that matches the query
 	 */
-	//Set<T> getMatches(String queryString);
+	// Set<T> getMatches(String queryString);
 
 	/**
 	 * Cluster objects into k clusters using k-means clustering
@@ -31,14 +31,14 @@ public interface MP5Db<T> {
 	 * 
 	 * @param user
 	 *            represents a user_id in the database
-	 * @return a function that predicts the user's ratings for objects (of type
-	 *         T) in the database of type MP5Db<T>. The function that is
-	 *         returned takes two arguments: one is the database and other other
-	 *         is a String that represents the id of an object of type T.
+	 * @return a function that predicts the user's ratings for objects (of type T)
+	 *         in the database of type MP5Db<T>. The function that is returned takes
+	 *         two arguments: one is the database and other other is a String that
+	 *         represents the id of an object of type T.
 	 */
 	ToDoubleBiFunction<MP5Db<T>, String> getPredictorFunction(String user);
 
-	User getUser (String userId);
+	User getUser(String userId);
 
 	Review getReview(String reviewId);
 
@@ -52,7 +52,19 @@ public interface MP5Db<T> {
 
 	boolean containsUser(String id);
 
+	/**
+	 * Finds out if the database
+	 * @param id
+	 * @return
+	 */
 	boolean containsProduct(String id);
 
+	/**
+	 * Finds out if the database contains a review with the given id
+	 * 
+	 * @param id
+	 *            the id associated with a review
+	 * @return true if the database contains such a review
+	 */
 	boolean containsReview(String id);
 }

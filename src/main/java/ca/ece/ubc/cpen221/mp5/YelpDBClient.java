@@ -58,7 +58,7 @@ public class YelpDBClient {
     }
 
     /**
-     * Use a YelpDBClient to request querys
+     * Use a YelpDBClient to request queries
      */
     public static void main(String[] args) {
         try {

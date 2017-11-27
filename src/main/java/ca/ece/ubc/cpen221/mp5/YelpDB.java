@@ -124,37 +124,61 @@ public class YelpDB implements MP5Db{
 		return (User)records.get(userId+"user");
 	}
 
+	/**
+	 * 
+	 */
 	public Review getReview(String reviewId){
 		return (Review)records.get(reviewId+"review");
 	}
 
+	/**
+	 * 
+	 */
 	public Product getProduct(String productId){
 		return (Product)records.get(productId+"business");
 	}
 
+	/**
+	 * 
+	 */
 	public void addUser(User user){
 		records.put(user.getId()+user.getType(),user);
 	}
 
+	/**
+	 * 
+	 */
 	public void addProduct(Product restaurant) {
 		records.put(restaurant.getId()+restaurant.getType(),restaurant);
 	}
 
+	/**
+	 * 
+	 */
 	public void addReview(Review review) {
 		records.put(review.getId()+review.getType(),review);
 	}
 
 
+	/**
+	 * 
+	 */
 	public boolean containsUser(String id) {
 		return records.containsKey(id+"user");
 	}
 
 
+	/**
+	 * 
+	 */
 	public boolean containsProduct(String id) {
 		return records.containsKey(id+"business");
 	}
 
 
+	/**
+	 * 
+	 */
 	public boolean containsReview(String id) {
 		return records.containsKey(id+"review");
 	}
