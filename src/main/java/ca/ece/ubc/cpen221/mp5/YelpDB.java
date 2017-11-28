@@ -10,14 +10,37 @@ import java.util.stream.Collectors;
 
 public class YelpDB implements MP5Db{
 	private Map<String, Record> records;
-	
+
+	/**
+	 * Constructs a Yelp Database from the three given json files
+	 * @param restaurantFile a file containing information on Yelp restaurants
+	 * @param reviewFile a file containing information on Yelp reviews
+	 * @param userFile a file containing information on Yelp users
+	 * @throws IOException if a file cannot be opened properly
+	 */
 	public YelpDB(String restaurantFile, String reviewFile, String userFile) throws IOException {
 		records = new HashMap<String, Record>();
 		parseUserFile(userFile);
 		parseRestaurantFile(restaurantFile);
 		parseReviewFile(reviewFile);
 	}
-	
+
+	/**
+	 * Perform a structured query and return the set of objects that matches the
+	 * query
+	 *
+	 * @param queryString
+	 * @return the set of objects that matches the query
+	 */
+	Set<T> getMatches(String queryString){
+		return null;
+	}
+
+	/**
+	 *
+	 * @param filename
+	 * @throws IOException
+	 */
 	private void parseUserFile(String filename) throws IOException {
 		String line;
 		FileReader fileReader = new FileReader(filename);
@@ -153,15 +176,20 @@ public class YelpDB implements MP5Db{
 	}
 
 	/**
-	 * 
+	 * Adds a review to the Yelp Database
+	 * Note that any existing review with the same ID will be overwritten
+	 * @param review the review object to be added to the database
 	 */
-	public void addReview(Review review) {
-		records.put(review.getId()+review.getType(),review);
+	public void addReview(Review review) { records.put(review.getId()+review.getType(),review);
 	}
 
 
 	/**
-	 * 
+	 * Finds out if the database contains a user with the given id
+	 *
+	 * @param id
+	 *            the id associated with a user
+	 * @return true if the database contains such a user
 	 */
 	public boolean containsUser(String id) {
 		return records.containsKey(id+"user");
@@ -169,15 +197,22 @@ public class YelpDB implements MP5Db{
 
 
 	/**
-	 * 
+	 * Finds out if the database contains a product with the given id
+	 *
+	 * @param id
+	 *            the id associated with a product
+	 * @return true if the database contains such a product
 	 */
 	public boolean containsProduct(String id) {
 		return records.containsKey(id+"business");
 	}
 
-
 	/**
-	 * 
+	 * Finds out if the database contains a review with the given id
+	 *
+	 * @param id
+	 *            the id associated with a review
+	 * @return true if the database contains such a review
 	 */
 	public boolean containsReview(String id) {
 		return records.containsKey(id+"review");

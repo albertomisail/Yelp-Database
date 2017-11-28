@@ -16,7 +16,7 @@ public interface MP5Db<T> {
 	 * @param queryString
 	 * @return the set of objects that matches the query
 	 */
-	// Set<T> getMatches(String queryString);
+	Set<T> getMatches(String queryString);
 
 	/**
 	 * Cluster objects into k clusters using k-means clustering

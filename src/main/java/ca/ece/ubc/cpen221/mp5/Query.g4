@@ -2,6 +2,8 @@
 
 grammar Query;
 
+query: 'QUERY' orExpr+;
+
 orExpr : andExpr (OR andExpr)*;
 andExpr : atom(AND atom)*;
 
@@ -20,13 +22,15 @@ fragment EQ : '=';
 in : 'in' LParen string RParen;
 category : 'category' LParen string RParen;
 name : 'name' LParen string RParen;
-rating : 'rating' INEQ num;
-price : price INEQ num;
+rating : 'rating' INEQ NUM;
+price : 'price' INEQ NUM;
 
-num : '1' .. '9';
+NUM : [0-9];
 
-string: CHAR*;
-fragment CHAR: ('a' .. 'z')|('1' .. '9')|('A' .. 'Z');
+string: '"' CHAR* '"';
+fragment CHAR: .;
 
 LParen : '(';
 RParen : ')';
+
+
