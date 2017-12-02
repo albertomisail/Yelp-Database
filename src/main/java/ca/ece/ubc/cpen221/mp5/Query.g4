@@ -2,6 +2,7 @@
 
 grammar Query;
 
+//nonterminals for parser
 query: 'QUERY' orExpr+;
 
 orExpr : andExpr (OR andExpr)*;
@@ -9,28 +10,28 @@ andExpr : atom(AND atom)*;
 
 atom : in|category|rating|price|name|LParen orExpr RParen;
 
+in : IN LPAREN STRING RPAREN;
+category : 'category' LParen STRING RPAREN;
+name : 'name' LParen STRING RParen;
+rating : 'rating' STRING NUM;
+price : 'price' ineq NUM;
+ineq: GT | GTE | LT | LTE |EQ;
+
+//tokens for lexer
 OR : '||';
 AND : '&&';
 
-INEQ : GT | GTE | LT | LTE |EQ;
-fragment GT : '>';
-fragment GTE : '>=';
-fragment LT : '<';
-fragment LTE : '<=';
-fragment EQ : '=';
+GT : '>';
+GTE : '>=';
+LT : '<';
+LTE : '<=';
+EQ : '=';
 
-in : 'in' LParen string RParen;
-category : 'category' LParen string RParen;
-name : 'name' LParen string RParen;
-rating : 'rating' INEQ NUM;
-price : 'price' INEQ NUM;
+IN : 'in';
+CATEGORY : 'category';
 
-NUM : [0-9];
-
-string: '"' CHAR* '"';
-fragment CHAR: .;
-
-LParen : '(';
-RParen : ')';
-
+NUM : [1-5];
+STRING : [a-zA-Z]+([ \t][a-zA-Z]+)*;
+LPAREN : '(';
+RPAREN : ')';
 

@@ -33,6 +33,9 @@ public class YelpDB implements MP5Db{
 	 * @return the set of objects that matches the query
 	 */
 	Set<T> getMatches(String queryString){
+		for(String key: records.keySet()){
+
+		}
 		return null;
 	}
 
