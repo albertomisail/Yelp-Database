@@ -1,0 +1,11 @@
+env:
+  global:
+    - CI_NAME=travis-pro
+    - COVERALLS_REPO_TOKEN=VAIAAqK0QJN60UaXL2OLyWY1045gc71gW
+
+language: java
+jdk:
+  - oraclejdk8          // tells Travis to use Java 8
+
+after_success:
+  - gradle jacocoTestReport coveralls
