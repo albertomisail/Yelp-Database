@@ -1,6 +1,8 @@
 package ca.ece.ubc.cpen221.mp5;
 
 import javax.json.*;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -32,11 +34,26 @@ public class YelpDB implements MP5Db{
 	 * @param queryString
 	 * @return the set of objects that matches the query
 	 */
-	Set<T> getMatches(String queryString){
-		for(String key: records.keySet()){
+	Set<YelpRestaurant> getMatches(String queryString) throws IOException{
+			queryString.trim();
+			CharStream stream = new ANTLRInputStream(queryString);
+			QueryLexer lexer = new QueryLexer(stream);
+			TokenStream tokens = new CommonTokenStream(lexer);
+			QueryParser parser = new QueryParser(tokens);
 
+			ParseTree tree = parser.root();
+			//((RuleContext)tree).inspect(parser);
+
+
+			ParseTreeWalker walker = new ParseTreeWalker();
+			QueryListener listener = new QueryListenerCollect();
+
+			walker.walk(listener, tree);
+
+			ArrayList<YelpRestaurant> filtered = ((QueryListenerCollect)listener).getFilteredList();
+			Set<YelpRestaurant> results = new HashSet<>(filtered);
+			return results;
 		}
-		return null;
 	}
 
 	/**

@@ -1,3 +1,5 @@
+package ca.ece.ubc.cpen221.mp5;
+
 // Generated from Query.g4 by ANTLR 4.5.3
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -7,15 +9,15 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface QueryListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link QueryParser#query}.
+	 * Enter a parse tree produced by {@link QueryParser#root}.
 	 * @param ctx the parse tree
 	 */
-	void enterQuery(QueryParser.QueryContext ctx);
+	void enterRoot(QueryParser.RootContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link QueryParser#query}.
+	 * Exit a parse tree produced by {@link QueryParser#root}.
 	 * @param ctx the parse tree
 	 */
-	void exitQuery(QueryParser.QueryContext ctx);
+	void exitRoot(QueryParser.RootContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link QueryParser#orExpr}.
 	 * @param ctx the parse tree
@@ -97,13 +99,13 @@ public interface QueryListener extends ParseTreeListener {
 	 */
 	void exitPrice(QueryParser.PriceContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link QueryParser#string}.
+	 * Enter a parse tree produced by {@link QueryParser#ineq}.
 	 * @param ctx the parse tree
 	 */
-	void enterString(QueryParser.StringContext ctx);
+	void enterIneq(QueryParser.IneqContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link QueryParser#string}.
+	 * Exit a parse tree produced by {@link QueryParser#ineq}.
 	 * @param ctx the parse tree
 	 */
-	void exitString(QueryParser.StringContext ctx);
+	void exitIneq(QueryParser.IneqContext ctx);
 }

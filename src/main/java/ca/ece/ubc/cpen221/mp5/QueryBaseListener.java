@@ -15,13 +15,13 @@ public class QueryBaseListener implements QueryListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterQuery(QueryParser.QueryContext ctx) { }
+	@Override public void enterRoot(QueryParser.RootContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitQuery(QueryParser.QueryContext ctx) { }
+	@Override public void exitRoot(QueryParser.RootContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -123,13 +123,13 @@ public class QueryBaseListener implements QueryListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterString(QueryParser.StringContext ctx) { }
+	@Override public void enterIneq(QueryParser.IneqContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitString(QueryParser.StringContext ctx) { }
+	@Override public void exitIneq(QueryParser.IneqContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
