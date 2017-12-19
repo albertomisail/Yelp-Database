@@ -22,5 +22,8 @@ public class YelpDBTest {
         assertEquals(false, database.containsProduct("lalal"));
         assertEquals(16, database.getMatches("category(Chinese)||in(Hearst Ave)").size());
         assertEquals(10, database.getMatches("in(Telegraph Ave) && category(Chinese) || category(Italian) && price <= 2 ").size());
+        assertEquals(0, database.getMatches("rating < 1 && rating = 1 && rating <= 1 && rating > 1 && rating >= 1").size());
+        assertEquals(0, database.getMatches("name aklsdfj").size());
+
     }
 }
