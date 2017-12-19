@@ -4,6 +4,9 @@ import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import java.util.Date;
 
+/**
+ * A generic review
+ */
 public class Review extends Record{
 	protected String product_id;
 	protected String text;
@@ -22,7 +25,11 @@ public class Review extends Record{
 	public int getStars() {
 		return stars;
 	}
-
+	
+	/**
+	 * Produces a string that is a json rep of the object
+	 * @return a string that is a json rep of the object
+	 */
 	@Override
 	public String toString(){
 		JsonObjectBuilder builder = Json.createObjectBuilder();
@@ -31,7 +38,7 @@ public class Review extends Record{
 				.add("stars", stars)
 				.add("user_id", user_id)
 				.add("date", date);
-
-		return super.toString()+builder.build().toString();
+		String jsonRep = builder.build().toString();
+		return super.toString()+jsonRep.substring(1, jsonRep.length()-1)+",";
 	}
 }

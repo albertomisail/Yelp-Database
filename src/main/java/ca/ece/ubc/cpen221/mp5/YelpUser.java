@@ -9,10 +9,6 @@ import java.util.HashSet;
 public class YelpUser extends User{
 	private int[] votes;
 	
-	public int[] getVotes() {
-		return votes;
-	}
-	
 	public YelpUser(String line) throws UnsupportedEncodingException {
 		parse(line);
 	}
@@ -63,6 +59,6 @@ public class YelpUser extends User{
 		JsonObjectBuilder builder = Json.createObjectBuilder();
 		builder.add("votes",votesJson);
 
-		return super.toString()+builder.build().toString();
+		return super.toString()+builder.build().toString().substring(1);
 	}
 }

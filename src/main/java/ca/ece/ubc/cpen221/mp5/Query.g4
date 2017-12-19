@@ -15,7 +15,7 @@ category : CATEGORYTOKEN LPAREN STRING RPAREN;
 name : NAMETOKEN LPAREN STRING RPAREN;
 rating : RATINGTOKEN ineq NUM;
 price : PRICETOKEN ineq NUM;
-ineq: GT | GTE | LT | LTE |EQ;
+ineq : GT | GTE | LT | LTE |EQ;
 
 //tokens for lexer
 OR : '||';
@@ -38,7 +38,6 @@ RATINGTOKEN: 'rating';
 PRICETOKEN : 'price';
 
 WHITE_SPACE : ( ' '|'\r'|'\t'|'\n' ) -> skip;
-
 STRING : [a-zA-Z]+([ \t][a-zA-Z]+)*;
 
 

@@ -6,9 +6,7 @@ import java.util.Random;
 
 /**
  * Most generic data type for an entry in the database
- * 
- * @author nancy
- *
+ *AF: each record has its own unique pair of id and type
  */
 
 public abstract class Record {
@@ -22,42 +20,27 @@ public abstract class Record {
 	public String getId() {
 		return id;
 	}
-
+	
 	/**
-	 * 
+	 * Produces a string that is a json rep of the object
+	 * @return a string that is a json rep of the object
 	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Record other = (Record) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (type == null) {
-			if (other.type != null)
-				return false;
-		} else if (!type.equals(other.type))
-			return false;
-		return true;
-	}
-
 	@Override
 	public String toString() {
 		JsonObjectBuilder builder = Json.createObjectBuilder();
 		builder.add("id",this.getId())
 				.add("type", this.getType());
 
-		return builder.build().toString();
+		String jsonRep = builder.build().toString();
+		return jsonRep.substring(0, jsonRep.length()-1)+",";
 	}
-
+	
+	//Taken from
 	//https://stackoverflow.com/questions/20536566/creating-a-random-string-with-a-z-and-0-9-in-java
+	/**
+	 * Produce a random string of length 23
+	 * @return a random string of length 23
+	 */
 	protected static String getSaltString() {
 		String SALTCHARS = "qwertyuiopasdfghjklzxcvbnmABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 		StringBuilder salt = new StringBuilder();

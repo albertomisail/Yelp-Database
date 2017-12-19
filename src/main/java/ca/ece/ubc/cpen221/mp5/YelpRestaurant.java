@@ -80,8 +80,7 @@ public class YelpRestaurant extends Product{
 				.add("longitude", coordinates.getLongitude())
 				.add("schools", schoolsJson)
 				.add("neighborhoods", neighborhoodsJson);
-
-		return super.toString()+builder.build().toString();
+		return super.toString()+builder.build().toString().substring(1);
 	}
 
 	public YelpRestaurant(String info, YelpDB database) throws UnsupportedEncodingException, NullPointerException, ClassCastException{
@@ -89,6 +88,7 @@ public class YelpRestaurant extends Product{
 		JsonReader reader = Json.createReader(stream);
 		JsonObject json = reader.readObject();
 		reader.close();
+		System.out.println("sfsg");
 		this.type = "business";
 		String restaurantId = Record.getSaltString();
 		while(database.containsProduct(restaurantId)){
@@ -96,7 +96,7 @@ public class YelpRestaurant extends Product{
 		}
 		this.id = restaurantId;
 		this.name = json.getString("name");
-		this.url = "http://www.yelp.com/biz/"+name;
+		this.url = "http://www.yelp.com/biz/"+name.toLowerCase().replace(' ','-');
 		JsonArray cat = json.getJsonArray("categories");
 		this.categories = new HashSet<>();
 		for(int i = 0; i < cat.size(); i++){
@@ -124,5 +124,9 @@ public class YelpRestaurant extends Product{
 		double a = json.getJsonNumber("longitude").doubleValue();
 		double b = json.getJsonNumber("latitude").doubleValue();
 		this.coordinates = new Point(a,b);
+	}
+
+	public String getAddress(){
+		return this.address;
 	}
 }

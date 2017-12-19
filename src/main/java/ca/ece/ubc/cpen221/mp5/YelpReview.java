@@ -35,10 +35,6 @@ public class YelpReview extends Review{
 
 	}
 
-	public int[] getVotes() {
-		return votes;
-	}
-
 	@Override
 	public String toString(){
 		JsonArrayBuilder votesJson = Json.createArrayBuilder();
@@ -48,8 +44,7 @@ public class YelpReview extends Review{
 
 		JsonObjectBuilder builder = Json.createObjectBuilder();
 		builder.add("votes",votesJson);
-
-		return super.toString()+builder.build().toString();
+		return super.toString()+builder.build().toString().substring(1);
 	}
 
 	public YelpReview(String info, YelpDB database) throws UnsupportedEncodingException, NullPointerException, ClassCastException{

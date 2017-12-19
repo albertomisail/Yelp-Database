@@ -1,69 +1,63 @@
 package ca.ece.ubc.cpen221.mp5;
 
-import javax.json.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
+
+import javax.json.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.ToDoubleBiFunction;
 import java.util.stream.Collectors;
 
-public class YelpDB implements MP5Db{
+/**
+ * A YelpDB RI: any record of type review that is in the database, the related
+ * user and restaurant are part of the database for any user in the database,
+ * the set of reviews corresponding to it should consist by all and only the
+ * reviewsId that are related to the user in the database for any restaurant in
+ * the database, the review count should equal the number of reviews that refer
+ * to that restaurant in the database there are no objects with repeated id and
+ * type in the databse AF: a map that map from a pair of id and type to a record
+ */
+public class YelpDB implements MP5Db {
 	private Map<String, Record> records;
 
 	/**
-	 * Constructs a Yelp Database from the three given json files
-	 * @param restaurantFile a file containing information on Yelp restaurants
-	 * @param reviewFile a file containing information on Yelp reviews
-	 * @param userFile a file containing information on Yelp users
-	 * @throws IOException if a file cannot be opened properly
+	 * Constructor
+	 * 
+	 * @param restaurantFile
+	 *            the file that contains the restaurants information in json format
+	 * @param reviewFile
+	 *            the file that contains the reviews information in json format
+	 * @param userFile
+	 *            the file that contains the users information in json format
+	 * @throws IOException
+	 *             if any of the files dont exist
+	 * @throws UnsupportedEncodingException
+	 *             if any of the files is not in json format
 	 */
-	public YelpDB(String restaurantFile, String reviewFile, String userFile) throws IOException {
-		records = new HashMap<String, Record>();
+	public YelpDB(String restaurantFile, String reviewFile, String userFile)
+			throws IOException, UnsupportedEncodingException {
+		records = new ConcurrentHashMap<String, Record>();
 		parseUserFile(userFile);
 		parseRestaurantFile(restaurantFile);
 		parseReviewFile(reviewFile);
 	}
 
 	/**
-	 * Perform a structured query and return the set of objects that matches the
-	 * query
-	 *
-	 * @param queryString
-	 * @return the set of objects that matches the query
-	 */
-	Set<YelpRestaurant> getMatches(String queryString) throws IOException{
-			queryString.trim();
-			CharStream stream = CharStreams.fromString(queryString);
-			QueryLexer lexer = new QueryLexer(stream);
-			TokenStream tokens = new CommonTokenStream(lexer);
-			QueryParser parser = new QueryParser(tokens);
-
-			ParseTree tree = parser.root();
-			//((RuleContext)tree).inspect(parser);
-
-
-			ParseTreeWalker walker = new ParseTreeWalker();
-			QueryListener listener = new QueryBaseListener(records);
-
-			walker.walk(listener, tree);
-
-			List<YelpRestaurant> filtered = ((QueryBaseListener)listener).getFilteredList();
-			Set<YelpRestaurant> results = new HashSet<>(filtered);
-			return results;
-		}
-	public static void main(String[] args) throws IOException{
-		YelpDB database = new YelpDB("data/restaurants.json","data/reviews.json","data/users.json");
-		System.out.println(database.getMatches("category(Chinese) || category(Italian) && price <= 2"));
-	}
-	/**
-	 *
+	 * Parse the user file
+	 * 
 	 * @param filename
+	 *            the file containing the information
 	 * @throws IOException
+	 *             if the file does not exist
+	 * @throws UnsupportedEncodingException
+	 *             if the file is not in json format
 	 */
-	private void parseUserFile(String filename) throws IOException {
+	private void parseUserFile(String filename) throws IOException, UnsupportedEncodingException {
 		String line;
 		FileReader fileReader = new FileReader(filename);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -74,7 +68,17 @@ public class YelpDB implements MP5Db{
 		bufferedReader.close();
 	}
 
-	private void parseRestaurantFile(String filename) throws IOException {
+	/**
+	 * Parse the restaurant file
+	 * 
+	 * @param filename
+	 *            the file containing the information
+	 * @throws IOException
+	 *             if the file does not exist
+	 * @throws UnsupportedEncodingException
+	 *             if the file is not in json format
+	 */
+	private void parseRestaurantFile(String filename) throws IOException, UnsupportedEncodingException {
 		String line;
 		FileReader fileReader = new FileReader(filename);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -85,158 +89,189 @@ public class YelpDB implements MP5Db{
 		bufferedReader.close();
 	}
 
-	private void parseReviewFile(String filename) throws IOException {
+	/**
+	 * Parse the review file
+	 * 
+	 * @param filename
+	 *            the file containing the information
+	 * @throws IOException
+	 *             if the file does not exist
+	 * @throws UnsupportedEncodingException
+	 *             if the file is not in json format
+	 */
+	private void parseReviewFile(String filename) throws IOException, UnsupportedEncodingException {
 		String line;
 		FileReader fileReader = new FileReader(filename);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		while ((line = bufferedReader.readLine()) != null) {
 			Review review = new YelpReview(line);
 			addReview(review);
-			User user = (User)records.get(((Review)review).getUser_id()+"user");
+			User user = (User) records.get(((Review) review).getUser_id() + "user");
 			user.addReview(review.getId());
 		}
 		bufferedReader.close();
 	}
 
-	public String kMeansClusters_json(int k){
-		Map<YelpRestaurant, Integer> clusters = kMeansClusters(k);
-		JsonObjectBuilder builder = Json.createObjectBuilder();
-		for(int i = 1; i <= k; i++){
-			Set<YelpRestaurant> restaurants = oneCluster(clusters, i);
-			JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-			restaurants.parallelStream().forEach(t->
-					{
-						arrayBuilder.add(t.toString());
-					}
-			);
-			builder.add("Cluster "+i,arrayBuilder);
+	public String kMeansClusters_json(int k) {
+		List<Set<YelpRestaurant>> clusters = kMeansClusters(k);
+		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+		for (int i = 0; i < clusters.size(); i++) {
+			Set<YelpRestaurant> set = clusters.get(i);
+			int clusterNumber = i + 1;
+			set.parallelStream().forEach(restaurant -> {
+				JsonObjectBuilder restaurantBuilder = Json.createObjectBuilder();
+				restaurantBuilder.add("x", restaurant.getPoint().getLatitude());
+				restaurantBuilder.add("y", restaurant.getPoint().getLongitude());
+				restaurantBuilder.add("name", restaurant.getName());
+				restaurantBuilder.add("cluster", clusterNumber);
+				restaurantBuilder.add("weight", 5.0);
+				arrayBuilder.add(restaurantBuilder);
+			});
 		}
-		return builder.build().toString();
+		return arrayBuilder.build().toString();
 	}
 
-	private Set<YelpRestaurant> oneCluster(Map<YelpRestaurant, Integer> map, int i){
-		Set<YelpRestaurant> result = new HashSet<YelpRestaurant>();
-		map.entrySet().parallelStream().forEach(t->
-				{
-					if(t.getValue().equals(i)){
-						result.add(t.getKey());
-					}
-				}
-		);
-		return result;
-	}
+	/**
+	 * Produces k non-empty clusters of restaurants based on their location
+	 * 
+	 * @param k
+	 *            the number of clusters
+	 * @return a list of set of restaurants, such that if a restaurant is in a set
+	 *         s, then its distance to the centroid of s is equal or smaller to the
+	 *         distance from such restaurant to the centroid of any other cluster in
+	 *         the list different than s
+	 */
+	public List<Set<YelpRestaurant>> kMeansClusters(int k) {
+		List<Set<YelpRestaurant>> result;
+		List<Point> cache = new ArrayList<>();
+		List<Point> centers;
+		Set<YelpRestaurant> restaurants = records.entrySet().parallelStream().map(t -> t.getValue())
+				.filter(t -> t.getType().equals("business")).map(t -> (YelpRestaurant) t).collect(Collectors.toSet());
 
-	private Map<YelpRestaurant, Integer> kMeansClusters(int k){
-		Map<YelpRestaurant, Integer> result = new HashMap<YelpRestaurant, Integer>();
-		Map<YelpRestaurant, Integer> cache = new HashMap<YelpRestaurant, Integer>();
-		List<Point> centers = new ArrayList<Point>();
-		for(int i = 1; i <= k; i++){
-			centers.add(new Point());
-		}
-		do{
-			records.entrySet().parallelStream().map(t->t.getValue())
-					.filter(t->t.getType().equals("business"))
-					.map(t->(YelpRestaurant)t).forEach(t->
-					{
-						int i = t.getPoint().getClosestPoint(centers);
-						result.put(t, i);
-					}
-			);
-		}while(false);
-		return result;
-	}
-
-	private boolean differentCluster(Map<YelpRestaurant, Integer> map, Map<String, Integer>cache) {
-		Set<Boolean> isFalse = new HashSet<Boolean>();
-		map.entrySet().parallelStream().forEach(t->
-			{
-				if(!cache.containsKey(t.getKey())){
-					isFalse.add(false);
-				}
-				else{
-					if(!cache.get(t.getKey()).equals(t.getValue())) isFalse.add(false);
+		centers = new ArrayList<Point>();
+		for (YelpRestaurant oneRes : restaurants) {
+			if(centers.size()==k) {
+				break;
+			}
+			else {
+				Point p = oneRes.getPoint();
+				if(!centers.contains(p)) {
+					centers.add(p);
 				}
 			}
-		);
-		return !isFalse.isEmpty();
+		}
+		do {
+			result = new ArrayList<>();
+			for (int i = 1; i <= k; i++) {
+				result.add(new HashSet<>());
+			}
+			cache = new ArrayList<>();
+			cache.addAll(centers);
+			for (YelpRestaurant restaurant : restaurants) {
+				int i = restaurant.getPoint().getClosestPoint(centers);
+				result.get(i).add(restaurant);
+			}
+			centers = new ArrayList<>();
+
+			for (Set<YelpRestaurant> set : result) {
+				centers.add(Point.getCentroid(set));
+			}
+
+		} while (differentCluster(centers, cache));
+		return result;
 	}
 
-	public ToDoubleBiFunction<MP5Db, String> getPredictorFunction(String user){
+	/**
+	 * Checks wether the clusters changed from one step to the other
+	 * 
+	 * @param centers
+	 *            the new list of centroids of clusters
+	 * @param cache
+	 *            the previous list of centroids of clusters
+	 * @return
+	 */
+	private boolean differentCluster(List<Point> centers, List<Point> cache) {
+		for (Point center : centers) {
+			if (!cache.contains(center)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public ToDoubleBiFunction<MP5Db, String> getPredictorFunction(String user) {
 		return new Predict(this, user);
 	}
 
-	public User getUser(String userId){
-		return (User)records.get(userId+"user");
+	public User getUser(String userId) {
+		return (User) records.get(userId + "user");
 	}
 
-	/**
-	 * 
-	 */
-	public Review getReview(String reviewId){
-		return (Review)records.get(reviewId+"review");
+	public Review getReview(String reviewId) {
+		return (Review) records.get(reviewId + "review");
 	}
 
-	/**
-	 * 
-	 */
-	public Product getProduct(String productId){
-		return (Product)records.get(productId+"business");
+	public Product getProduct(String productId) {
+		return (Product) records.get(productId + "business");
 	}
 
-	/**
-	 * 
-	 */
-	public void addUser(User user){
-		records.put(user.getId()+user.getType(),user);
+	public void addUser(User user) {
+		records.put(user.getId() + user.getType(), user);
 	}
 
-	/**
-	 * 
-	 */
 	public void addProduct(Product restaurant) {
-		records.put(restaurant.getId()+restaurant.getType(),restaurant);
+		records.put(restaurant.getId() + restaurant.getType(), restaurant);
 	}
 
-	/**
-	 * Adds a review to the Yelp Database
-	 * Note that any existing review with the same ID will be overwritten
-	 * @param review the review object to be added to the database
-	 */
-	public void addReview(Review review) { records.put(review.getId()+review.getType(),review);
+	public void addReview(Review review) {
+		records.put(review.getId() + review.getType(), review);
 	}
 
-
-	/**
-	 * Finds out if the database contains a user with the given id
-	 *
-	 * @param id
-	 *            the id associated with a user
-	 * @return true if the database contains such a user
-	 */
 	public boolean containsUser(String id) {
-		return records.containsKey(id+"user");
+		return records.containsKey(id + "user");
 	}
 
-
-	/**
-	 * Finds out if the database contains a product with the given id
-	 *
-	 * @param id
-	 *            the id associated with a product
-	 * @return true if the database contains such a product
-	 */
 	public boolean containsProduct(String id) {
-		return records.containsKey(id+"business");
+		return records.containsKey(id + "business");
+	}
+
+	public boolean containsReview(String id) {
+		return records.containsKey(id + "review");
 	}
 
 	/**
-	 * Finds out if the database contains a review with the given id
+	 * Perform a structured query and return the set of objects that matches the
+	 * query
 	 *
-	 * @param id
-	 *            the id associated with a review
-	 * @return true if the database contains such a review
+	 * @param queryString
+	 * @return the set of objects that matches the query
 	 */
-	public boolean containsReview(String id) {
-		return records.containsKey(id+"review");
+	Set<YelpRestaurant> getMatches(String queryString) throws IOException{
+		queryString.trim();
+		CharStream stream = CharStreams.fromString(queryString);
+		QueryLexer lexer = new QueryLexer(stream);
+		TokenStream tokens = new CommonTokenStream(lexer);
+		QueryParser parser = new QueryParser(tokens);
+
+		ParseTree tree = parser.root();
+		//((RuleContext)tree).inspect(parser);
+
+
+		ParseTreeWalker walker = new ParseTreeWalker();
+		QueryListener listener = new QueryBaseListener(records);
+
+		walker.walk(listener, tree);
+
+
+		Set<YelpRestaurant> results = ((QueryBaseListener)listener).evaluate();
+		return results;
+	}
+	public static void main(String[] args) throws IOException{
+		YelpDB database = new YelpDB("data/restaurants.json","data/reviews.json","data/users.json");
+		Set<YelpRestaurant> s = database.getMatches("category(Chinese)||in(Hearst)");
+		System.out.println(s.size());
+		for(YelpRestaurant t : s){
+			System.out.println(t);
+		}
 	}
 }

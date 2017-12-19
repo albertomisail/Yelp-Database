@@ -6,6 +6,10 @@ import javax.json.JsonObjectBuilder;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * A generic user of any database
+ *
+ */
 public class User extends Record{
 	protected String name;
 	protected String url;
@@ -15,6 +19,11 @@ public class User extends Record{
 
 	public void addReview(String review_Id){
 		this.reviews.add(review_Id);
+
+	}
+
+	public void increaseReviewCount(){
+		this.reviewCount++;
 	}
 
 	public Set<String> getReviews() {
@@ -24,7 +33,11 @@ public class User extends Record{
 	public double getAverageStars() {
 		return averageStars;
 	}
-
+	
+	/**
+	 * Produces a string that is a json rep of the object
+	 * @return a string that is a json rep of the object
+	 */
 	@Override
 	public String toString(){
 		JsonObjectBuilder builder = Json.createObjectBuilder();
@@ -32,7 +45,8 @@ public class User extends Record{
 				.add("name", name)
 				.add("average_stars", averageStars)
 				.add("review_count", reviewCount);
-		return super.toString()+builder.build().toString();
+		String jsonRep = builder.build().toString();
+		return super.toString()+jsonRep.substring(1, jsonRep.length()-1)+",";
 
 	}
 }
