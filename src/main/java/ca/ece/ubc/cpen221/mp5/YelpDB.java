@@ -46,16 +46,14 @@ public class YelpDB implements MP5Db{
 
 
 			ParseTreeWalker walker = new ParseTreeWalker();
-			QueryListener listener = new QueryListenerCollect();
+			QueryListener listener = new QueryListenerCollect(records);
 
 			walker.walk(listener, tree);
 
-			ArrayList<YelpRestaurant> filtered = ((QueryListenerCollect)listener).getFilteredList();
+			List<YelpRestaurant> filtered = ((QueryListenerCollect)listener).getFilteredList();
 			Set<YelpRestaurant> results = new HashSet<>(filtered);
 			return results;
 		}
-	}
-
 	/**
 	 *
 	 * @param filename

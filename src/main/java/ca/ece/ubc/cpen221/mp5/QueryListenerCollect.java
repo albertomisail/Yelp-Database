@@ -5,20 +5,23 @@ import java.util.stream.*;
 
 public class QueryListenerCollect implements QueryListener {
     private Stack<List<YelpRestaurant>> restaurants;
+    private List<YelpRestaurant> allRests;
 
     /**
      * Constructor
      */
-    public QueryListenerCollect(){
+    public QueryListenerCollect(Map<String, Record> records){
        restaurants = new Stack<>();
+       //@TODO: is this the right type?
+       this.allRests = records.values().stream().filter(r -> Arrays.asList(r.getType()).equals("Business")).collect(Collectors.toList());
     }
     /**
-     *
+     * Returns a copy of the list of all restaurants
      */
     //may need to sync this with database (i.e. it changes when the database is modified)
     public List<YelpRestaurant> getRestaurants(){
-        //@TODO: Implement
-        return null;
+        List<YelpRestaurant> ret = new ArrayList<>(allRests);
+        return ret;
     }
 
     /**
@@ -41,14 +44,21 @@ public class QueryListenerCollect implements QueryListener {
      * @param ctx the parse tree
      */
     public void enterOrExpr(QueryParser.OrExprContext ctx){
-
     }
     /**
      * Exit a parse tree produced by {@link QueryParser#orExpr}.
      * @param ctx the parse tree
      */
     public void exitOrExpr(QueryParser.OrExprContext ctx){
-
+        List<YelpRestaurant> rests= restaurants.pop();
+        List<YelpRestaurant> toCompare;
+        while(!restaurants.isEmpty()){
+            toCompare = restaurants.pop();
+            for(YelpRestaurant r: toCompare){
+                if(!rests.contains(r)) rests.add(r);
+            }
+        }
+        restaurants.push(rests);
     }
     /**
      * Enter a parse tree produced by {@link QueryParser#andExpr}.
@@ -62,6 +72,13 @@ public class QueryListenerCollect implements QueryListener {
      * @param ctx the parse tree
      */
     public void exitAndExpr(QueryParser.AndExprContext ctx){
+        List<YelpRestaurant> rests= restaurants.pop();
+        List<YelpRestaurant> toCompare;
+        while(!restaurants.isEmpty()){
+            toCompare = restaurants.pop();
+            rests.stream().filter(r -> toCompare.contains(r)).collect(Collectors.toList());
+        }
+        restaurants.push(rests);
 
     }
     /**
@@ -90,6 +107,14 @@ public class QueryListenerCollect implements QueryListener {
      * @param ctx the parse tree
      */
     public void exitIn(QueryParser.InContext ctx){
+        String tokenString = ctx.STRING().toString();
+
+        List<YelpRestaurant> rests = getRestaurants();
+
+        //TODO: Find the appropriate get method
+        rests = rests.stream().filter(r -> Arrays.asList(r.get()).contains(tokenString)).collect(Collectors.toList());
+
+        this.restaurants.push(rests);
 
     }
     /**
@@ -144,14 +169,26 @@ public class QueryListenerCollect implements QueryListener {
      * @param ctx the parse tree
      */
     public void exitRating(QueryParser.RatingContext ctx){
-        String ineq = ctx.ineq.toString();
+        String ineq = ctx.ineq().toString();
+        Double num = Double.valueOf(ctx.NUM().toString());
 
         List<YelpRestaurant> rests = getRestaurants();
 
-        rests = rests.stream().filter(r -> Arrays.asList(r.getStars()) < rating).collect(Collectors.toList());
-
+        switch(ineq) {
+            case "<":
+                rests = rests.stream().filter(r -> r.getStars() < num).collect(Collectors.toList());
+            case "<=":
+                rests = rests.stream().filter(r -> r.getStars() <= num).collect(Collectors.toList());
+            case "=":
+                rests = rests.stream().filter(r -> r.getStars() == num).collect(Collectors.toList());
+            case ">=":
+                rests = rests.stream().filter(r -> r.getStars() >= num).collect(Collectors.toList());
+            case ">":
+                rests = rests.stream().filter(r -> r.getStars() > num).collect(Collectors.toList());
+            default:
+                assert(false);
+        }
         this.restaurants.push(rests);
-
     }
     /**
      * Enter a parse tree produced by {@link QueryParser#price}.
@@ -165,7 +202,26 @@ public class QueryListenerCollect implements QueryListener {
      * @param ctx the parse tree
      */
     public void exitPrice(QueryParser.PriceContext ctx){
+        String ineq = ctx.ineq().toString();
+        Double num = Double.valueOf(ctx.NUM().toString());
 
+        List<YelpRestaurant> rests = getRestaurants();
+
+        switch(ineq) {
+            case "<":
+                rests = rests.stream().filter(r -> r.getPrice() < num).collect(Collectors.toList());
+            case "<=":
+                rests = rests.stream().filter(r -> r.getPrice() <= num).collect(Collectors.toList());
+            case "=":
+                rests = rests.stream().filter(r -> r.getPrice() == num).collect(Collectors.toList());
+            case ">=":
+                rests = rests.stream().filter(r -> r.getPrice() >= num).collect(Collectors.toList());
+            case ">":
+                rests = rests.stream().filter(r -> r.getPrice() > num).collect(Collectors.toList());
+            default:
+                assert(false);
+        }
+        this.restaurants.push(rests);
     }
     /**
      * Enter a parse tree produced by {@link QueryParser#ineq}.
@@ -180,5 +236,12 @@ public class QueryListenerCollect implements QueryListener {
      */
     public void exitIneq(QueryParser.IneqContext ctx){
 
+    }
+
+    /**
+     * Returns a filtered list of restaurants satisfying the query conditions
+     */
+    public List<YelpRestaurant> getFilteredList(){
+        return restaurants.peek();
     }
 }
