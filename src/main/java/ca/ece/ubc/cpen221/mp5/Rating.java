@@ -17,26 +17,14 @@ public class Rating implements Operation {
     @Override
     public Set<YelpRestaurant> evaluate(Set<YelpRestaurant> set) {
         Set<YelpRestaurant> result = new HashSet<>();
-        switch (ineq){
-            //TODO check this
-            case "<":
-                result = set.stream().filter(r -> (stars-r.getStars())>tolerance).collect(Collectors.toSet());
-                break;
-            case "<=":
-                result = set.stream().filter(r -> (stars-r.getStars())>tolerance||(stars-r.getStars()<tolerance&&r.getStars()-stars>tolerance)).collect(Collectors.toSet());
-                break;
-            case "=":
-                result = set.stream().filter(r -> (stars-r.getStars()<tolerance&&r.getStars()-stars<tolerance)).collect(Collectors.toSet());
-                break;
-            case ">=":
-                result = set.stream().filter(r -> (r.getStars()-stars)<tolerance).collect(Collectors.toSet());
-                break;
-            case ">":
-                result = set.stream().filter(r -> (r.getStars()-stars)>tolerance).collect(Collectors.toSet());
-                break;
-            default:
-                assert(false);
-        }
+
+        if(ineq.equals("<")) result = set.stream().filter(r -> (stars-r.getStars())>tolerance).collect(Collectors.toSet());
+        else if(ineq.equals("<=")) result = set.stream().filter(r -> (stars-r.getStars())>tolerance||(stars-r.getStars()<tolerance&&r.getStars()-stars>tolerance)).collect(Collectors.toSet());
+        else if(ineq.equals("=")) result = set.stream().filter(r -> (stars-r.getStars()<tolerance&&r.getStars()-stars<tolerance)).collect(Collectors.toSet());
+        else if(ineq.equals(">=")) result = set.stream().filter(r -> (r.getStars()-stars)<tolerance).collect(Collectors.toSet());
+        else if(ineq.equals(">")) result = set.stream().filter(r -> (r.getStars()-stars)>tolerance).collect(Collectors.toSet());
+        else assert(false);
+
         return result;
     }
 }

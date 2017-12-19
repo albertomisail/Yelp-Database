@@ -16,25 +16,13 @@ public class Price implements Operation {
     @Override
     public Set<YelpRestaurant> evaluate(Set<YelpRestaurant> set) {
         Set<YelpRestaurant> result = new HashSet<>();
-        switch (ineq){
-            case "<":
-                result = set.stream().filter(r -> r.getPrice() < price).collect(Collectors.toSet());
-                break;
-            case "<=":
-                result = set.stream().filter(r -> r.getPrice() <= price).collect(Collectors.toSet());
-                break;
-            case "=":
-                result = set.stream().filter(r -> r.getPrice() == price).collect(Collectors.toSet());
-                break;
-            case ">=":
-                result = set.stream().filter(r -> r.getPrice() >= price).collect(Collectors.toSet());
-                break;
-            case ">":
-                result = set.stream().filter(r -> r.getPrice() > price).collect(Collectors.toSet());
-                break;
-            default:
-                assert(false);
-        }
+        if(ineq.equals("<")) result = set.stream().filter(r -> r.getPrice() < price).collect(Collectors.toSet());
+        else if(ineq.equals("<=")) result = set.stream().filter(r -> r.getPrice() <= price).collect(Collectors.toSet());
+        else if(ineq.equals("=")) result = set.stream().filter(r -> r.getPrice() == price).collect(Collectors.toSet());
+        else if(ineq.equals(">=")) result = set.stream().filter(r -> r.getPrice() >= price).collect(Collectors.toSet());
+        else if(ineq.equals(">")) result = set.stream().filter(r -> r.getPrice() > price).collect(Collectors.toSet());
+        else assert(false);
+
         return result;
     }
 }
