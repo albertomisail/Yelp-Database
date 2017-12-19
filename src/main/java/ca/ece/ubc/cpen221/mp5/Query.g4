@@ -3,14 +3,14 @@
 grammar Query;
 
 //nonterminals for parser
-root: QUERYTOKEN orExpr+ EOF;
+root: orExpr+;
 
 orExpr : andExpr (OR andExpr)*;
 andExpr : atom (AND atom)*;
 
 atom : in|category|rating|price|name|LPAREN orExpr RPAREN;
 
-in : IN LPAREN STRING RPAREN;
+in : INTOKEN LPAREN STRING RPAREN;
 category : CATEGORYTOKEN LPAREN STRING RPAREN;
 name : NAMETOKEN LPAREN STRING RPAREN;
 rating : RATINGTOKEN ineq NUM;
@@ -27,18 +27,21 @@ LT : '<';
 LTE : '<=';
 EQ : '=';
 
-IN : 'in';
-CATEGORY : 'category';
-
 NUM : [1-5];
-STRING : [a-zA-Z]+([ \t][a-zA-Z]+)*;
 LPAREN : '(';
 RPAREN : ')';
 
-QUERYTOKEN : 'QUERY';
+INTOKEN: 'in';
 CATEGORYTOKEN: 'category';
 NAMETOKEN: 'name';
 RATINGTOKEN: 'rating';
 PRICETOKEN : 'price';
+
+WHITE_SPACE : ( ' '|'\r'|'\t'|'\n' ) -> skip;
+
+STRING : [a-zA-Z]+([ \t][a-zA-Z]+)*;
+
+
+
 
 

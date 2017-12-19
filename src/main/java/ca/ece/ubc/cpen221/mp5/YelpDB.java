@@ -36,7 +36,7 @@ public class YelpDB implements MP5Db{
 	 */
 	Set<YelpRestaurant> getMatches(String queryString) throws IOException{
 			queryString.trim();
-			CharStream stream = new ANTLRInputStream(queryString);
+			CharStream stream = CharStreams.fromString(queryString);
 			QueryLexer lexer = new QueryLexer(stream);
 			TokenStream tokens = new CommonTokenStream(lexer);
 			QueryParser parser = new QueryParser(tokens);
@@ -46,14 +46,18 @@ public class YelpDB implements MP5Db{
 
 
 			ParseTreeWalker walker = new ParseTreeWalker();
-			QueryListener listener = new QueryListenerCollect(records);
+			QueryListener listener = new QueryBaseListener(records);
 
 			walker.walk(listener, tree);
 
-			List<YelpRestaurant> filtered = ((QueryListenerCollect)listener).getFilteredList();
+			List<YelpRestaurant> filtered = ((QueryBaseListener)listener).getFilteredList();
 			Set<YelpRestaurant> results = new HashSet<>(filtered);
 			return results;
 		}
+	public static void main(String[] args) throws IOException{
+		YelpDB database = new YelpDB("data/restaurants.json","data/reviews.json","data/users.json");
+		System.out.println(database.getMatches("category(Chinese) || category(Italian) && price <= 2"));
+	}
 	/**
 	 *
 	 * @param filename
