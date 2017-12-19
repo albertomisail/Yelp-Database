@@ -12,7 +12,7 @@ import java.util.Set;
 import static org.junit.Assert.assertEquals;
 
 public class KclusterTest {
-	
+
 	@Test
     public void test0() throws IOException {
         YelpDB database = new YelpDB("data/restaurants.json","data/reviews.json","data/users.json");

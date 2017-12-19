@@ -1,4 +1,4 @@
-package ca.ece.ubc.cpen221.test;
+package ca.ece.ubc.cpen221.mp5.tests;
 
 import ca.ece.ubc.cpen221.mp5.*;
 import org.junit.Test;
@@ -20,5 +20,6 @@ public class YelpDBTest {
         assertEquals(true, database.getUser(database.getReview("0f8QNSVSocn40zr1tSSGRw").getUser_id()).getReviews()
                                         .contains("0f8QNSVSocn40zr1tSSGRw"));
         assertEquals(false, database.containsProduct("lalal"));
+        assertEquals(16, database.getMatches("category(Chinese)||in(Hearst Ave)").size());
     }
 }
