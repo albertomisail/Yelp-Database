@@ -79,7 +79,7 @@ public class YelpRestaurant extends Product{
 				.add("latitude", coordinates.getLatitude())
 				.add("longitude", coordinates.getLongitude())
 				.add("schools", schoolsJson)
-				.add("neighborhoods", neighborhoodsJson);
+				.add("neighborhoods", neighborhoodsJson).add("price", price);
 		return super.toString()+builder.build().toString().substring(1);
 	}
 
