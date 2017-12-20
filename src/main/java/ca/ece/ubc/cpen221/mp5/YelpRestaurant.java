@@ -103,7 +103,6 @@ public class YelpRestaurant extends Product{
 			categories.add(cat.getString(i));
 		}
 		this.stars = 0.0;
-		//TODO chech this
 		this.numberOfReviews = 0;
 		this.photoUrl = json.getString("photo_url");
 		this.price = json.getInt("price");

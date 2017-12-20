@@ -4,6 +4,7 @@ import ca.ece.ubc.cpen221.mp5.*;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
@@ -26,5 +27,15 @@ public class YelpDBTest {
         assertEquals(0, database.getMatches("rating < 1 && rating = 1 && rating <= 1 && rating > 1 && rating >= 1").size());
         assertEquals(0, database.getMatches("name(aklsdfj)").size());
 
+    }
+
+    @Test
+    public void test2() throws IOException{
+        YelpDB database = new YelpDB("data/restaurants.json","data/reviews.json","data/users.json");
+        Set<YelpRestaurant> s = database.getMatches("in(Telegraph Ave) && category(Chinese) || category(Italian) && price <= 2 ");
+        System.out.println(s.size());
+        for(YelpRestaurant r : s){
+            System.out.println(r);
+        }
     }
 }

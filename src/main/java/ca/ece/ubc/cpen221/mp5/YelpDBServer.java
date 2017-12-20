@@ -1,8 +1,11 @@
 package ca.ece.ubc.cpen221.mp5;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Set;
 
 public class YelpDBServer {
     public static final int PORT = 4949;
@@ -81,7 +84,12 @@ public class YelpDBServer {
 
     private void structuredQuery(String query, PrintWriter out) {
         try {
-            out.println(database.getMatches(query).toString());
+            Set<YelpRestaurant> set = database.getMatches(query);
+            JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+            for(YelpRestaurant restaurant : set){
+                arrayBuilder.add(restaurant.toString());
+            }
+            out.print(arrayBuilder.build().toString());
             //**TODO Make json array -> string representation -> store in out
         } catch (Exception e) {
             out.print("ERR: INVALID_QUERY\n");
