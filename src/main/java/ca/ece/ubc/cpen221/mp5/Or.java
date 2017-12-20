@@ -16,6 +16,11 @@ public class Or implements Addable{
         operationList.add(o);
     }
 
+    /**
+     * Evaluates the operation, returns a set conformed by the union of the set of restaurants that conform to the condition of the operations that conform the and expression.
+     * @param set the input set of restaurants
+     * @return a set x such that a restaurant r  is in x if and only if r is in set and conforms to the operation
+     */
     public Set<YelpRestaurant> evaluate(Set<YelpRestaurant> set){
         Set<YelpRestaurant> result = new HashSet<>();
         for(Operation e : operationList){

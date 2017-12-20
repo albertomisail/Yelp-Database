@@ -10,6 +10,11 @@ public class Category implements Operation{
         this.category = category;
     }
 
+    /**
+     * Evaluates the operation, returns a set conformed by all the restaurants of set for which category is present in the set of categories of the restaurant
+     * @param set the input set of restaurants
+     * @return a set x such that a restaurant r  is in x if and only if r is in set and conforms to the operation
+     */
     public Set<YelpRestaurant> evaluate(Set<YelpRestaurant> set){
         Set<YelpRestaurant> result = new HashSet<>();
         set.stream().forEach(t->{

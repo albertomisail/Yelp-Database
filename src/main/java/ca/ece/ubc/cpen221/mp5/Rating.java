@@ -14,6 +14,11 @@ public class Rating implements Operation {
         this.ineq = ineq;
     }
 
+    /**
+     * Evaluates the operation, returns a set conformed by the restaurnats of set such that restaurant.stars() ineq stars is true.
+     * @param set the input set of restaurants
+     * @return a set x such that a restaurant r  is in x if and only if r is in set and conforms to the operation
+     */
     @Override
     public Set<YelpRestaurant> evaluate(Set<YelpRestaurant> set) {
         Set<YelpRestaurant> result = new HashSet<>();

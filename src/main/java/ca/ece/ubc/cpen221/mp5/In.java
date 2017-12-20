@@ -10,6 +10,11 @@ public class In implements Operation{
         this.address = address;
     }
 
+    /**
+     * Evaluates the operation, returns a set conformed by all the restaurants of set that their address contains the string address
+     * @param set the input set of restaurants
+     * @return a set x such that a restaurant r  is in x if and only if r is in set and conforms to the operation
+     */
     public Set<YelpRestaurant> evaluate(Set<YelpRestaurant> set){
         Set<YelpRestaurant> result = new HashSet<>();
         set.stream().forEach(t->{
