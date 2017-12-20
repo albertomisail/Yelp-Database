@@ -41,21 +41,8 @@ public class ServerTest {
                     YelpDBClient client = new YelpDBClient("localhost", 4949);
                     client.sendRequest("QUERY rating < 1 &&");
                     String reply = client.getReply().toString();
-                    assertEquals("[]", reply);
-                    client.close();
-                } catch (Exception e){
-                    System.out.println("ERROR");
-                }
-            }
-        });
-
-        Thread query3 = new Thread(new Runnable(){
-            public void run() {
-                try{
-                    YelpDBClient client = new YelpDBClient("localhost", 4949);
-                    client.sendRequest("QUERY rating < 1 &&");
-                    String reply = client.getReply().toString();
-                    assertEquals("[]", reply);
+                    System.out.println(reply);
+                    assertEquals("ERR: INVALID_QUERY", reply);
                     client.close();
                 } catch (Exception e){
                     System.out.println("ERROR");

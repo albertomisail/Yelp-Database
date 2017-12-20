@@ -83,18 +83,24 @@ public class YelpDBServer {
     }
 
     private void structuredQuery(String query, PrintWriter out) {
-        try {
-            Set<YelpRestaurant> set = database.getMatches(query);
+
+        Set<YelpRestaurant> set = database.getMatches(query);
+        if(set == null){
+            out.println("ERR: INVALID_QUERY");
+        }
+        else if(set.size()==0) {
+            out.println("ERR: NO_MATCH");
+        }
+        else{
+
             JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
             for(YelpRestaurant restaurant : set){
                 arrayBuilder.add(restaurant.toString());
             }
-            out.print(arrayBuilder.build().toString());
-            //**TODO Make json array -> string representation -> store in out
-        } catch (Exception e) {
-            out.print("ERR: INVALID_QUERY\n");
-
+            out.println(arrayBuilder.build().toString());
         }
+        //**TODO Make json array -> string representation -> store in out
+
     }
 
     private void getRestaurantRequest(String restaurantId, PrintWriter out) {

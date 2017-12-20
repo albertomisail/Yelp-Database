@@ -297,7 +297,7 @@ public class QueryParser extends Parser {
 			if ( listener instanceof QueryListener ) ((QueryListener)listener).enterAtom(this);
 		}
 		@Override
-		public void exitRule(ParseTreeListener listener) {
+		public void exitRule(ParseTreeListener listener){
 			if ( listener instanceof QueryListener ) ((QueryListener)listener).exitAtom(this);
 		}
 	}

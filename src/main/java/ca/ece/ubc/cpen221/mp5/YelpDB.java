@@ -246,7 +246,7 @@ public class YelpDB implements MP5Db {
 	 * @param queryString
 	 * @return the set of objects that matches the query
 	 */
-	public Set<YelpRestaurant> getMatches(String queryString) throws IOException{
+	public Set<YelpRestaurant> getMatches(String queryString){
 		queryString.trim();
 		CharStream stream = CharStreams.fromString(queryString);
 		QueryLexer lexer = new QueryLexer(stream);
@@ -263,7 +263,12 @@ public class YelpDB implements MP5Db {
 		walker.walk(listener, tree);
 
 
-		Set<YelpRestaurant> results = ((QueryBaseListener)listener).evaluate();
+		Set<YelpRestaurant> results = null;
+		try {
+			results = ((QueryBaseListener)listener).evaluate();
+		} catch (Exception e) {
+
+		}
 		return results;
 	}
 }
