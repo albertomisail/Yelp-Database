@@ -1,4 +1,4 @@
-package ca.ece.ubc.cpen221.test;
+package ca.ece.ubc.cpen221.mp5.tests;
 
 import ca.ece.ubc.cpen221.mp5.MP5Db;
 import ca.ece.ubc.cpen221.mp5.Predict;
