@@ -169,7 +169,7 @@ public class QueryBaseListener implements QueryListener {
 	 */
 	public void exitPrice(QueryParser.PriceContext ctx){
 		String ineq = ctx.ineq().getChild(0).getText();
-		Integer price = Integer.valueOf(ctx.NUM().toString());
+		Double price = Double.valueOf(ctx.NUM().toString());
 		stack.peek().addOperation(new Price(ineq, price));
 	}
 	/**

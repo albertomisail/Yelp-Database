@@ -28,7 +28,7 @@ public class Rating implements Operation {
         else if(ineq.equals("=")) result = set.stream().filter(r -> (stars-r.getStars()<tolerance&&r.getStars()-stars<tolerance)).collect(Collectors.toSet());
         else if(ineq.equals(">=")) result = set.stream().filter(r -> (r.getStars()-stars)<tolerance).collect(Collectors.toSet());
         else if(ineq.equals(">")) result = set.stream().filter(r -> (r.getStars()-stars)>tolerance).collect(Collectors.toSet());
-        else assert(false);
+        //else assert(false);
 
         return result;
     }

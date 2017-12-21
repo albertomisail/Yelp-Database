@@ -25,6 +25,7 @@ public class YelpDBTest {
         System.out.println(database.getMatches("in(Telegraph Ave) && category(Chinese) || category(Italian) && price <= 2 "));
         assertEquals(10, database.getMatches("in(Telegraph Ave) && category(Chinese) || category(Italian) && price <= 2 ").size());
         assertEquals(0, database.getMatches("rating < 1 && rating = 1 && rating <= 1 && rating > 1 && rating >= 1").size());
+        assertEquals(0, database.getMatches("price = 1 && price >= 1 && price > 1").size());
         assertEquals(0, database.getMatches("name(aklsdfj)").size());
 
     }

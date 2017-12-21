@@ -22,10 +22,6 @@ public class User extends Record{
 
 	}
 
-	public void increaseReviewCount(){
-		this.reviewCount++;
-	}
-
 	public Set<String> getReviews() {
 		return reviews;
 	}

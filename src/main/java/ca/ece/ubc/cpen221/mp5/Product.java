@@ -66,7 +66,4 @@ public class Product extends Record{
 		return super.toString()+jsonRep.substring(1, jsonRep.length()-1)+",";
 	}
 
-	public void increaseNumberOfReviews(){
-		this.numberOfReviews++;
-	}
 }

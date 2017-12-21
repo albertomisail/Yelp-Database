@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 
 public class Price implements Operation {
     private String ineq;
-    private int price;
+    private double price;
 
-    public Price(String ineq, Integer price){
+    public Price(String ineq, double price){
         this.price = price;
         this.ineq = ineq;
     }
@@ -26,8 +26,6 @@ public class Price implements Operation {
         else if(ineq.equals("=")) result = set.stream().filter(r -> r.getPrice() == price).collect(Collectors.toSet());
         else if(ineq.equals(">=")) result = set.stream().filter(r -> r.getPrice() >= price).collect(Collectors.toSet());
         else if(ineq.equals(">")) result = set.stream().filter(r -> r.getPrice() > price).collect(Collectors.toSet());
-        else assert(false);
-
         return result;
     }
 }

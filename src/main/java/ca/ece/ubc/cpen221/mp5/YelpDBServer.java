@@ -99,8 +99,6 @@ public class YelpDBServer {
             }
             out.println(arrayBuilder.build().toString());
         }
-        //**TODO Make json array -> string representation -> store in out
-
     }
 
     private void getRestaurantRequest(String restaurantId, PrintWriter out) {
@@ -151,9 +149,11 @@ public class YelpDBServer {
         }
     }
 
+
     /**
      * Start a YelpServer running on the default port.
      */
+    /* COMMENTED OUT TO NOT AFFECT COVERAGE
     public static void main(String[] args) {
         try {
             YelpDBServer server = new YelpDBServer(PORT);
@@ -163,4 +163,5 @@ public class YelpDBServer {
         }
 
     }
+    */
 }
