@@ -9,13 +9,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class YelpRestaurant extends Product{
-	private boolean open = false;
-	private Set<String> neighborhoods = new HashSet<>();
-	private String state = "N/A";
-	private String city = "N/A";
-	private String address = "N/A";
-	private Set<String> schools = new HashSet<>();
-	private Point coordinates = new Point(0,0);
+	private boolean open;
+	private Set<String> neighborhoods;
+	private String state;
+	private String city;
+	private String address;
+	private Set<String> schools;
+	private Point coordinates;
 	
 	public YelpRestaurant(String line) throws UnsupportedEncodingException {
 		parse(line);
@@ -103,29 +103,28 @@ public class YelpRestaurant extends Product{
 		}
 		this.stars = 0.0;
 		this.numberOfReviews = 0;
-		if (json.containsKey("photo_url")) this.photoUrl = json.getString("photo_url");
-		if (json.containsKey("price")) this.price = json.getInt("price");
-		if (json.containsKey("open")) this.open = json.getBoolean("open");
-		if (json.containsKey("neighborhoods")) {
-			JsonArray hoods = json.getJsonArray("neighborhoods");
-			this.neighborhoods = new HashSet<>();
-			for (int i = 0; i < hoods.size(); i++) {
-				this.neighborhoods.add(hoods.getString(i));
-			}
+		this.photoUrl = json.getString("photo_url");
+		this.price = json.getInt("price");
+		this.open = json.getBoolean("open");
+
+
+		JsonArray hoods = json.getJsonArray("neighborhoods");
+		this.neighborhoods = new HashSet<>();
+		for (int i = 0; i < hoods.size(); i++) {
+			this.neighborhoods.add(hoods.getString(i));
 		}
-		if (json.containsKey("state")) this.state = json.getString("state");
-		if (json.containsKey("city")) this.city = json.getString("city");
-		if (json.containsKey("full_address")) this.address = json.getString("full_address");
-		if (json.containsKey("schools")) {
-			JsonArray sch = json.getJsonArray("schools");
-			this.schools = new HashSet<>();
-			for (int i = 0; i < sch.size(); i++) {
-				this.neighborhoods.add(sch.getString(i));
-			}
-			double a = json.getJsonNumber("longitude").doubleValue();
-			double b = json.getJsonNumber("latitude").doubleValue();
-			this.coordinates = new Point(a, b);
+		this.state = json.getString("state");
+		this.city = json.getString("city");
+		this.address = json.getString("full_address");
+
+		JsonArray sch = json.getJsonArray("schools");
+		this.schools = new HashSet<>();
+		for (int i = 0; i < sch.size(); i++) {
+			this.neighborhoods.add(sch.getString(i));
 		}
+		double a = json.getJsonNumber("longitude").doubleValue();
+		double b = json.getJsonNumber("latitude").doubleValue();
+		this.coordinates = new Point(a, b);
 	}
 
 	public String getAddress(){

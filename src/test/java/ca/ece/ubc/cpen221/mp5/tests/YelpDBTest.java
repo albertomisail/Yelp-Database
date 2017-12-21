@@ -37,5 +37,21 @@ public class YelpDBTest {
         for(YelpRestaurant r : s){
             System.out.println(r);
         }
-    }
+       Set<YelpRestaurant> s2 =  database.getMatches("name(bloop)");
+        assertEquals(0, s2.size());
+        YelpRestaurant bloop = new YelpRestaurant("{\"open\": true, \"url\": \"http://www.yelp.com/biz/the-toaster-oven-berkeley\", \"longitude\": -122.2590117, \"neighborhoods\": [\"Telegraph Ave\", \"UC Campus Area\"], \"name\": \"bloop\", \"categories\": [\"Sandwiches\", \"Restaurants\"], \"state\": \"CA\", \"type\": \"business\", \"stars\": 3.5, \"city\": \"Berkeley\", \"full_address\": \"2309 Telegraph Ave\\nTelegraph Ave\\nBerkeley, CA 94704\", \"review_count\": 55, \"photo_url\": \"http://s3-media2.ak.yelpcdn.com/bphoto/1IirdUSB0yi4TorBV5JPoA/ms.jpg\", \"schools\": [\"University of California at Berkeley\"], \"latitude\": 37.8684118, \"price\": 1}", database);
+        database.addProduct(bloop);
+
+        s2 = database.getMatches("name(bloop)");
+        assertEquals(1, s2.size());
+
+        YelpUser userx = new YelpUser("{\"name\": \"userx\", \"user_id\": \"pineapples\"}", database);
+        database.addUser(userx);
+        String userxID = userx.getId();
+        assertEquals(true, database.containsUser(userxID));
+        assertEquals(0, userx.getAverageStars(), 0.01);
+        assertEquals(0, userx.getReviews().size());
+        userx.addReview("12345");
+        assertEquals(1, userx.getReviews().size());
+        }
 }
