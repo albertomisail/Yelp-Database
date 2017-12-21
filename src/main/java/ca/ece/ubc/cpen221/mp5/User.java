@@ -8,7 +8,7 @@ import java.util.Set;
 
 /**
  * A generic user of any database
- *
+ * AF: Same as that of record
  */
 public class User extends Record{
 	protected String name;

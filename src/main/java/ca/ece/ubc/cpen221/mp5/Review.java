@@ -6,6 +6,8 @@ import java.util.Date;
 
 /**
  * A generic review
+ * RI: product_id, user_id, text, stars, date are not null
+ * AF: (same as that of its record)
  */
 public class Review extends Record{
 	protected String product_id;

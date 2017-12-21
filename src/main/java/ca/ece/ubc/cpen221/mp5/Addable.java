@@ -1,8 +1,8 @@
 package ca.ece.ubc.cpen221.mp5;
 
-/**
- * Represents an operation that is conformed by multiple suboperations.
- * Examples of instances of these interface is the or expression and and expressions
+/** USED BY QUERYBASELISTENER
+ * Represents an operation that is conformed to by multiple suboperations.
+ * Examples of instances of these interface is the OR expression and AND expressions
  */
 public interface Addable extends Operation {
     /**

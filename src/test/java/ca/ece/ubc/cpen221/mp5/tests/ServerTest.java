@@ -73,20 +73,6 @@ public class ServerTest {
             }
         });
 
-        Thread query9 = new Thread(new Runnable(){
-            public void run() {
-                try{
-                    YelpDBClient client = new YelpDBClient("localhost", 4949);
-                    client.sendRequest("GETRESTAURANT cookie");
-                    String reply = client.getReply();
-                    assertNotEquals("ERR: NO_SUCH_RESTAURANT", reply);
-                    client.close();
-                } catch (Exception e){
-                    System.out.println("ERROR");
-                }
-            }
-        });
-
         Thread query5 = new Thread(new Runnable(){
             public void run() {
                 try{
@@ -151,11 +137,12 @@ public class ServerTest {
         query3.run();
         query3.join();
         query4.run();
+        query4.join();
         query5.run();
         query6.run();
         query7.run();
+        query7.join();
         query8.run();
-        query9.run();
         testServer.join(1);
     }
 

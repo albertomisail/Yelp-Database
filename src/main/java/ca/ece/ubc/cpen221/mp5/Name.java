@@ -5,6 +5,8 @@ import java.util.Set;
 
 /**
  * Represent the name operation
+ * RI: name is not null
+ * AF: maps each Name operation to its name field
  */
 public class Name implements Operation{
     private String name;

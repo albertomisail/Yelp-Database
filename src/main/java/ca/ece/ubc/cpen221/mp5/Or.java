@@ -5,6 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Represents an OR Expression
+ * RI: consists of a nonempty list of elements that can be ORed together
+ * AF: maps the elements to a set such that each element of the set is contained in at least one of the elements
+ */
 public class Or implements Addable{
     private List<Operation> operationList;
 

@@ -4,6 +4,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * RI: ineq and price are not null
+ * AF: value of ineq and price fields
+ */
+
 public class Price implements Operation {
     private String ineq;
     private double price;

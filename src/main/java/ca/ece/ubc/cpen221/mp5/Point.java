@@ -5,7 +5,8 @@ import java.util.Set;
 
 /**
  * Represent a point in the plane
- * AF: point is represented with two coordinates long and lat
+ * RI: long and lat are not null
+ * AF: point is represented with two doubles long and lat (its coordinates)
  */
 public class Point {
 	private double longitude;

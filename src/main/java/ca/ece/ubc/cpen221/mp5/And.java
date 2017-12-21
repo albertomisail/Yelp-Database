@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Represents and an expression
+ * Represents an AND expression
+ * RI: consists of a nonempty list of elements that can be ANDed together
+ * AF: maps the elements to a set such that each element of the set is contained in all of the elements
  */
 public class And implements Addable{
     private List<Operation> operationList;

@@ -3,6 +3,11 @@ package ca.ece.ubc.cpen221.mp5;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Represents an IN operation
+ * RI: address is not null
+ * AF: each in operation is defined by its one field, address
+ */
 public class In implements Operation{
     private String address;
 

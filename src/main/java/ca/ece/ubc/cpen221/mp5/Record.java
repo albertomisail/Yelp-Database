@@ -6,6 +6,7 @@ import java.util.Random;
 
 /**
  * Most generic data type for an entry in the database
+ * RI: id and type are not null
  *AF: each record has its own unique pair of id and type
  */
 
